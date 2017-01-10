@@ -77,7 +77,7 @@ class DataSource extends HTMLElement {
     }
 }
 
-export default function() {
+export default function registerDS() {
     try {
         return document.registerElement('as24-tags-data-source', DataSource);
     } catch (e) {

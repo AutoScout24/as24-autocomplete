@@ -3,6 +3,7 @@ input[type="tel"].sc-input,
 input[type="number"].sc-input,
 input[type="email"].sc-input,
 textarea.sc-input, select.sc-input, .as24-autocomplete__input {
+  font-size: 16px;
   font-size: 1rem;
   padding: 4px 12px;
   height: 40px; }
@@ -36,6 +37,7 @@ input[type="tel"].sc-input,
 input[type="number"].sc-input,
 input[type="email"].sc-input,
 textarea.sc-input, select.sc-input, .as24-autocomplete__input {
+  font-size: 16px;
   font-size: 1rem;
   padding: 4px 12px;
   height: 40px; }
@@ -69,6 +71,7 @@ input[type="tel"].sc-input,
 input[type="number"].sc-input,
 input[type="email"].sc-input,
 textarea.sc-input, select.sc-input, .as24-autocomplete__input {
+  font-size: 16px;
   font-size: 1rem;
   padding: 4px 12px;
   height: 40px; }
@@ -112,6 +115,7 @@ textarea.sc-input, select.sc-input, custom-dropdown.sc-input, .as24-autocomplete
   color: #333;
   width: 100%;
   line-height: 1.5;
+  -webkit-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in;
   outline: none;
   cursor: pointer; }
@@ -230,20 +234,25 @@ input[type="radio"].sc-input,
 input[type="checkbox"].sc-input {
   display: block;
   opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
   position: absolute; }
   input[type="radio"].sc-input.block + label,
   input[type="checkbox"].sc-input.block + label {
     display: block; }
   input[type="radio"].sc-input + label,
   input[type="checkbox"].sc-input + label {
-    user-select: none;
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+    line-height: 24px;
     line-height: 1.5rem;
     display: inline-block;
     position: relative;
     margin-right: 16px;
     cursor: pointer; }
-    input[type="radio"].sc-input + label::before,
-    input[type="checkbox"].sc-input + label::before {
+    input[type="radio"].sc-input + label:before,
+    input[type="checkbox"].sc-input + label:before {
       content: '';
       display: block;
       background-size: cover;
@@ -251,22 +260,25 @@ input[type="checkbox"].sc-input {
       left: 0;
       top: 0;
       border: 1px solid #939393;
+      -webkit-transition: border-color 0.2s ease-in;
       transition: border-color 0.2s ease-in; }
-    input[type="radio"].sc-input + label::after,
-    input[type="checkbox"].sc-input + label::after {
+    input[type="radio"].sc-input + label:after,
+    input[type="checkbox"].sc-input + label:after {
+      -webkit-transition: border-color 0.2s ease-in;
       transition: border-color 0.2s ease-in; }
-  input[type="radio"].sc-input:disabled + label::before,
-  input[type="checkbox"].sc-input:disabled + label::before {
-    opacity: 0.45; }
+  input[type="radio"].sc-input:disabled + label:before,
+  input[type="checkbox"].sc-input:disabled + label:before {
+    opacity: 0.45;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=45)"; }
   input[type="radio"].sc-input:disabled + label,
   input[type="checkbox"].sc-input:disabled + label {
     cursor: not-allowed;
     color: #c4c4c4; }
-  input[type="radio"].sc-input:enabled + label:hover::before,
-  input[type="checkbox"].sc-input:enabled + label:hover::before {
+  input[type="radio"].sc-input:enabled + label:hover:before,
+  input[type="checkbox"].sc-input:enabled + label:hover:before {
     border-color: #333; }
-  input[type="radio"].sc-input:focus:enabled + label::before,
-  input[type="checkbox"].sc-input:focus:enabled + label::before {
+  input[type="radio"].sc-input:focus:enabled + label:before,
+  input[type="checkbox"].sc-input:focus:enabled + label:before {
     border-color: #3d648c; }
 
 select.sc-input {
@@ -293,7 +305,9 @@ as24-autocomplete {
     fill: #c4c4c4; }
 
 .as24-autocomplete--active .as24-autocomplete__icon-wrapper {
-  transform: rotate(180deg); }
+  -webkit-transform: rotate(180deg);
+      -ms-transform: rotate(180deg);
+          transform: rotate(180deg); }
 
 .as24-autocomplete--user-input .as24-autocomplete__icon-dropdown {
   display: none; }
@@ -319,10 +333,14 @@ as24-autocomplete {
 
 .as24-autocomplete__icon-wrapper {
   position: absolute;
+  width: 16px;
   width: 1rem;
+  height: 16px;
   height: 1rem;
+  right: 16px;
   right: 1rem;
   top: 50%;
+  margin-top: -8px;
   margin-top: -.5rem;
   cursor: pointer; }
 
@@ -334,7 +352,9 @@ as24-autocomplete {
   .as24-autocomplete__icon-dropdown__icon, .as24-autocomplete__icon-cross__icon {
     position: absolute;
     top: 50%;
-    transform: translateY(-50%); }
+    -webkit-transform: translateY(-50%);
+        -ms-transform: translateY(-50%);
+            transform: translateY(-50%); }
   .as24-autocomplete__icon-dropdown:before, .as24-autocomplete__icon-cross:before {
     content: '';
     z-index: 0;
@@ -361,6 +381,7 @@ as24-autocomplete {
   border-top-width: 0;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+  max-height: 192px;
   max-height: 12rem;
   z-index: 1;
   width: 100%;
@@ -370,7 +391,10 @@ as24-autocomplete {
 
 .as24-autocomplete__list-item {
   padding: 4px 12px;
-  user-select: none; }
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none; }
   .as24-autocomplete__list-item--preselected {
     background: #dcdcdc; }
   .as24-autocomplete__list-item--selected {
@@ -378,3 +402,5 @@ as24-autocomplete {
   .as24-autocomplete__list-item--empty {
     color: #d91a2a;
     background: #fff; }
+
+/*# sourceMappingURL=as24-autocomplete.css.map */

@@ -27,12 +27,13 @@ const closestByClassName = className =>
      * @return {HTMLElement|null}
      */
     elem => {
-        if (elem === null) {
+        // Fix for IE.
+        if (elem.tagName === 'HTML') {
             return null;
         } else {
             return elem.classList.contains(className)
                 ? elem
-                : closestByClassName(className)(elem.parentElement);
+                : closestByClassName(className)(elem.parentNode);
         }
     };
 
@@ -347,7 +348,7 @@ const selectItem = (valueInput, userFacingInput, li, rootElement, list) => {
         }
         hideList(list, rootElement)();
     }
-    
+
     valueInput.value = li.dataset.key;
     userFacingInput.value = li.innerText;
     triggerChangeEvent('change', valueInput);
@@ -638,7 +639,7 @@ function onAttributeChanged(attrName, oldVal, newVal) {
     }
 }
 
-export default function() {
+export default function registerInput() {
     try {
         return document.registerElement('as24-autocomplete', {
             prototype: Object.assign(

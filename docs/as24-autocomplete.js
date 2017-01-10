@@ -1,6 +1,3 @@
-var as24Autocomplete = (function () {
-'use strict';
-
 /**
  * @class DOMEvent
  * @property {HTMLElement} target
@@ -9,49 +6,46 @@ var as24Autocomplete = (function () {
  * @property {function} preventDefault
  */
 
+
+
 /**
  * @callback fetchItemsFn
  * @param {string} userInput
  * @return {Promise}
  */
 
+
+
 /**
  * Finds a closest element by class name
  * @param {string} className
  * @returns {function}
  */
-var closestByClassName = function closestByClassName(className) {
-    return (
-        /**
-         * @param {HTMLElement} elem
-         * @return {HTMLElement|null}
-         */
-        function (elem) {
-            if (elem === null) {
-                return null;
-            } else {
-                return elem.classList.contains(className) ? elem : closestByClassName(className)(elem.parentElement);
-            }
+var closestByClassName = function (className) { return function (elem) {
+        // Fix for IE.
+        if (elem.tagName === 'HTML') {
+            return null;
+        } else {
+            return elem.classList.contains(className)
+                ? elem
+                : closestByClassName(className)(elem.parentNode);
         }
-    );
-};
+    }; };
+
+
 
 /**
  * Checks whether elem has tag as a parent
  * @param {HTMLElement} tag
  * @returns {function}
  */
-var closestByTag = function closestByTag(tag) {
-    return (
-        /**
-         * @param {HTMLElement} elem
-         * @return {HTMLElement|null}
-         */
-        function (elem) {
-            return elem === null ? null : elem === tag ? tag : closestByTag(tag)(elem.parentNode);
-        }
-    );
-};
+var closestByTag = function (tag) { return function (elem) { return elem === null
+            ? null
+            : (elem === tag)
+                ? tag
+                : closestByTag(tag)(elem.parentNode); }; };
+
+
 
 /**
  * Selects an element using the root element.
@@ -59,9 +53,9 @@ var closestByTag = function closestByTag(tag) {
  * @param {Element} root Specified within which element to perform the lookup
  * @return {Element}
  */
-var $ = function $(selector, root) {
-    return root.querySelector(selector);
-};
+var $ = function (selector, root) { return root.querySelector(selector); };
+
+
 
 /**
  * Binds an event listener on the element
@@ -70,49 +64,48 @@ var $ = function $(selector, root) {
  * @param {Element|Window|Document} el
  * @param {boolean} capturing
  */
-var on = function on(event, cb, el) {
-    var capturing = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
-    return el.addEventListener(event, cb, capturing);
+var on = function (event, cb, el, capturing) {
+        if ( capturing === void 0 ) capturing = false;
+
+        return el.addEventListener(event, cb, capturing);
 };
+
+
 
 /**
  * Appends a child element to a target element
  * @param {HTMLElement|DocumentFragment} target
  * @returns {function}
  */
-var appendTo = function appendTo(target) {
-    return (
-        /**
-         * @param {HTMLElement} child
-         * @return {HTMLElement}
-         */
-        function (child) {
-            target.appendChild(child);
-            return target;
-        }
-    );
-};
+var appendTo = function (target) { return function (child) {
+        target.appendChild(child);
+        return target;
+    }; };
+
+
 
 /**
 * Finds the currently selected suggestion item
 * @param {HTMLUListElement} list
 * @returns {HTMLLIElement}
 */
-var getSelectedSuggestionItem = function getSelectedSuggestionItem(list) {
-    return $('.as24-autocomplete__list-item--selected', list);
-};
+var getSelectedSuggestionItem = function (list) { return $('.as24-autocomplete__list-item--selected', list); };
+
+
 
 /**
 *
 * @param {HTMLElement} list
 * @param {HTMLElement} selected
 */
-var followSelectedItem = function followSelectedItem(list, selected) {
+var followSelectedItem = function (list, selected) {
     var listHeight = list.getBoundingClientRect().height;
     var selectedTop = selected.offsetTop;
     var selectedHeight = selected.offsetHeight;
     list.scrollTop = -1 * (listHeight - (selectedTop + selectedHeight));
 };
+
+
 
 /**
  * Selected next/prev suggestion item
@@ -120,10 +113,14 @@ var followSelectedItem = function followSelectedItem(list, selected) {
  * @param {HTMLUListElement} list
  * @return {boolean}
  */
-var moveSelection = function moveSelection(dir, list) {
+var moveSelection = function (dir, list) {
     var next = dir === 1 ? 'nextSibling' : 'previousSibling';
     var currActiveItem = getSelectedSuggestionItem(list);
-    var nextActiveItem = currActiveItem === null ? $('.as24-autocomplete__list-item', list) : currActiveItem[next] !== null ? currActiveItem[next] : currActiveItem;
+    var nextActiveItem = currActiveItem === null
+        ? $('.as24-autocomplete__list-item', list)
+        : currActiveItem[next] !== null
+            ? currActiveItem[next]
+            : currActiveItem;
     if (currActiveItem) {
         currActiveItem.classList.remove('as24-autocomplete__list-item--selected');
     }
@@ -132,37 +129,41 @@ var moveSelection = function moveSelection(dir, list) {
     return false;
 };
 
+
+
 /**
  * Shows the suggestions list
  * @param {HTMLUListElement} list
  * @return {boolean}
  */
-var showList = function showList(list) {
+var showList = function (list) {
     list.classList.add('as24-autocomplete__list--visible');
     moveSelection(1, list);
     return false;
 };
+
+
 
 /**
  * Hides the list and deactivates the root element
  * @param {HTMLUListElement} list
  * @param {Element} rootElement
  */
-var hideList = function hideList(list, rootElement) {
-    return function () {
-        rootElement.classList.remove('as24-autocomplete--active');
-        list.classList.remove('as24-autocomplete__list--visible');
-        return false;
-    };
-};
+var hideList = function (list, rootElement) { return function () {
+    rootElement.classList.remove('as24-autocomplete--active');
+    list.classList.remove('as24-autocomplete__list--visible');
+    return false;
+}; };
+
+
 
 /**
  * Checks whether the list is visisible
  * @param {Element} list
  */
-var isListVisible = function isListVisible(list) {
-    return list.classList.contains('as24-autocomplete__list--visible');
-};
+var isListVisible = function (list) { return list.classList.contains('as24-autocomplete__list--visible'); };
+
+
 
 /**
  * When user clicks cross icon, all the input must be removed
@@ -171,7 +172,7 @@ var isListVisible = function isListVisible(list) {
  * @param {HTMLElement} rootElement
  * @return {*}
  */
-var cleanup = function cleanup(valueInput, userFacingInput, rootElement) {
+var cleanup = function (valueInput, userFacingInput, rootElement) {
     valueInput.value = '';
     userFacingInput.value = '';
     rootElement.isDirty = false;
@@ -179,44 +180,40 @@ var cleanup = function cleanup(valueInput, userFacingInput, rootElement) {
     removeInputError(rootElement);
 };
 
+
+
 /**
  * When user types something in we mark the component as dirty
  * @param {Element} rootElement
  * @return {*}
  */
-var dirtifyInput = function dirtifyInput(rootElement) {
+var dirtifyInput = function (rootElement) {
     rootElement.isDirty = true;
     rootElement.classList.add('as24-autocomplete--user-input');
 };
+
+
 
 /**
  * Renders a li item for the suggestions list
  * @param {string} searchStr
  * @returns {function}
  */
-var renderLI = function renderLI(searchStr) {
-    return (
-        /**
-         * @param {Suggestion} item
-         * @returns {HTMLLIElement}
-         */
-        function (item) {
-            var li = document.createElement('li');
-            var escapedSearchStr = searchStr.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-            li.classList.add('as24-autocomplete__list-item');
-            li.dataset.key = item.key;
-            li.innerHTML = item.value.replace(new RegExp('(' + escapedSearchStr + ')', 'ig'), '<strong>$1</strong>');
-            return li;
-        }
-    );
-};
+var renderLI = function (searchStr) { return function (item) {
+        var li = document.createElement('li');
+        var escapedSearchStr = searchStr.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+        li.classList.add('as24-autocomplete__list-item');
+        li.dataset.key = item.key;
+        li.innerHTML = item.value.replace(new RegExp(("(" + escapedSearchStr + ")"), 'ig'), '<strong>$1</strong>');
+        return li;
+    }; };
 
 /**
  * Highlight an error when there is nothing to suggest
  * @param {HTMLElement} rootElement
  * @return {*}
  */
-var setInputError = function setInputError(rootElement) {
+var setInputError = function (rootElement) {
     var input = $('.as24-autocomplete__input', rootElement);
     input.classList.add('error');
 };
@@ -226,7 +223,7 @@ var setInputError = function setInputError(rootElement) {
  * @param {HTMLElement} rootElement
  * @return {*}
  */
-var removeInputError = function removeInputError(rootElement) {
+var removeInputError = function (rootElement) {
     var input = $('.as24-autocomplete__input', rootElement);
     input.classList.remove('error');
 };
@@ -237,7 +234,7 @@ var removeInputError = function removeInputError(rootElement) {
  * @param {HTMLElement} rootElement
  * @returns {HTMLLIElement}
  */
-var renderEmptyListItem = function renderEmptyListItem(emptyMessage, rootElement) {
+var renderEmptyListItem = function (emptyMessage, rootElement) {
     setInputError(rootElement);
     /**
      * @type {HTMLLIElement}
@@ -250,6 +247,8 @@ var renderEmptyListItem = function renderEmptyListItem(emptyMessage, rootElement
     return li;
 };
 
+
+
 /**
  * Renders a collection of raw suggestions to the list
  * @param {string} emptyMessage
@@ -258,22 +257,20 @@ var renderEmptyListItem = function renderEmptyListItem(emptyMessage, rootElement
  * @param {HTMLElement} rootElement
  * @returns {Function}
  */
-var renderList = function renderList(emptyMessage, list, userFacingInput, rootElement) {
-    return (
-        /**
-         * @param {Array<Suggestion>} suggestions
-         */
-        function (suggestions) {
-            list.innerHTML = '';
-            var df = document.createDocumentFragment();
+var renderList = function (emptyMessage, list, userFacingInput, rootElement) { return function (suggestions) {
+        list.innerHTML = '';
+        var df = document.createDocumentFragment();
 
-            (suggestions.length ? suggestions.map(renderLI(userFacingInput.value)) : [renderEmptyListItem(emptyMessage, rootElement)]).forEach(appendTo(df));
+        (suggestions.length
+            ? suggestions.map(renderLI(userFacingInput.value))
+            : [renderEmptyListItem(emptyMessage, rootElement)]
+        ).forEach(appendTo(df));
 
-            appendTo(list)(df);
-            showList(list);
-        }
-    );
-};
+        appendTo(list)(df);
+        showList(list);
+    }; };
+
+
 
 /**
  * Fetch data according to user input and renders the list
@@ -284,32 +281,25 @@ var renderList = function renderList(emptyMessage, list, userFacingInput, rootEl
  * @param {Element} rootElement
  * @returns {function}
  */
-var fetchList = function fetchList(dataSource, userFacingInput, list, emptyMessage, rootElement) {
-    return (
-        /**
-         * @function
-         * @param {DOMEvent} e
-         * @return {undefined}
-         */
-        function (e) {
-            e.stopPropagation();
-            rootElement.classList.add('as24-autocomplete--active');
-            removeInputError(rootElement);
-            dataSource.fetchItems(userFacingInput.value).then(renderList(emptyMessage, list, userFacingInput, rootElement));
-        }
-    );
-};
+var fetchList = function (dataSource, userFacingInput, list, emptyMessage, rootElement) { return function (e) {
+        e.stopPropagation();
+        rootElement.classList.add('as24-autocomplete--active');
+        removeInputError(rootElement);
+        dataSource.fetchItems(userFacingInput.value).then(renderList(emptyMessage, list, userFacingInput, rootElement));
+    }; };
+
 
 /**
  *
  * @param {string} eventName
  * @param {HTMLInputElement} el
  */
-var triggerChangeEvent = function triggerChangeEvent(eventName, el) {
+var triggerChangeEvent = function (eventName, el) {
     var evt = document.createEvent('Event');
     evt.initEvent(eventName, true, true);
     el.dispatchEvent(evt);
 };
+
 
 /**
  * This is what happens after the user selected an item
@@ -319,10 +309,10 @@ var triggerChangeEvent = function triggerChangeEvent(eventName, el) {
  * @param {Element} rootElement
  * @param {HTMLLIElement} list
  */
-var selectItem = function selectItem(valueInput, userFacingInput, li, rootElement, list) {
-    if (!li) {
+var selectItem = function (valueInput, userFacingInput, li, rootElement, list) {
+    if(!li){
         li = getSelectedSuggestionItem(list);
-        if (li.classList.contains('as24-autocomplete__list-item--empty')) {
+        if(li.classList.contains('as24-autocomplete__list-item--empty')){
             return;
         }
         hideList(list, rootElement)();
@@ -334,30 +324,25 @@ var selectItem = function selectItem(valueInput, userFacingInput, li, rootElemen
     dirtifyInput(rootElement);
 };
 
+
+
 /**
  * When mouse goes over the suggestion item
  * @param {HTMLUListElement} list
  * @return {function} a function that accepts an event
  */
-var onItemMouseOver = function onItemMouseOver(list) {
-    return (
-        /**
-         * @function
-         * @param {DOMEvent} e
-         * @return {undefined}
-         */
-        function (e) {
-            e.stopPropagation();
-            var preselected = $('.as24-autocomplete__list-item--preselected', list);
-            if (e.target.tagName === 'LI') {
-                if (preselected) {
-                    preselected.classList.remove('as24-autocomplete__list-item--preselected');
-                }
-                e.target.classList.add('as24-autocomplete__list-item--preselected');
+var onItemMouseOver = function (list) { return function (e) {
+        e.stopPropagation();
+        var preselected = $('.as24-autocomplete__list-item--preselected', list);
+        if (e.target.tagName === 'LI') {
+            if (preselected) {
+                preselected.classList.remove('as24-autocomplete__list-item--preselected');
             }
+            e.target.classList.add('as24-autocomplete__list-item--preselected');
         }
-    );
-};
+    }; };
+
+
 
 /**
  * Handles key down event from the label input
@@ -369,40 +354,39 @@ var onItemMouseOver = function onItemMouseOver(list) {
  * @param {Element} rootElement
  * @return {function}
  */
-var onKeyDown = function onKeyDown(dataSource, valueInput, userFacingInput, list, emptyListMessage, rootElement) {
-    return (
-        /**
-         * @function
-         * @param {DOMEvent} e
-         * @return {undefined}
-         */
-        function (e) {
-            if (e.target === userFacingInput) {
-                if ([38, 40, 27].indexOf(e.which) >= 0) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                }
-                if (e.which === 9) {
-                    if (isListVisible(list)) {
-                        selectItem(valueInput, userFacingInput, getSelectedSuggestionItem(list), rootElement);
-                        hideList(list, rootElement)(e);
-                    }
-                }
-                if (e.which === 38) {
-                    return moveSelection(-1, list);
-                }
-                if (e.which === 40) {
-                    return isListVisible(list) ? moveSelection(1, list) : fetchList(dataSource, userFacingInput, list, emptyListMessage, rootElement)(e);
-                }
-                if (e.which === 27) {
-                    cleanup(valueInput, userFacingInput, rootElement);
-                    return hideList(list, rootElement)();
+var onKeyDown = function (dataSource, valueInput, userFacingInput, list, emptyListMessage, rootElement) { return function (e) {
+        if (e.target === userFacingInput) {
+            if ([38, 40, 27].indexOf(e.which) >= 0) {
+                e.stopPropagation();
+                e.preventDefault();
+            }
+            if (e.which === 9) {
+                if (isListVisible(list)) {
+                    selectItem(valueInput, userFacingInput,
+                        getSelectedSuggestionItem(list),
+                        rootElement
+                    );
+                    hideList(list, rootElement)(e);
                 }
             }
-            return null;
+            if (e.which === 38) {
+                return moveSelection(-1, list);
+            }
+            if (e.which === 40) {
+                return isListVisible(list)
+                    ? moveSelection(1, list)
+                    : fetchList(dataSource, userFacingInput, list,
+                        emptyListMessage, rootElement)(e);
+            }
+            if (e.which === 27) {
+                cleanup(valueInput, userFacingInput, rootElement);
+                return hideList(list, rootElement)();
+            }
         }
-    );
-};
+        return null;
+    }; };
+
+
 
 /**
  * Handles key up event from the label input
@@ -414,33 +398,26 @@ var onKeyDown = function onKeyDown(dataSource, valueInput, userFacingInput, list
  * @param {Element} rootElement
  * @return {function}
  */
-var onKeyUp = function onKeyUp(dataSource, valueInput, userFacingInput, list, emptyListMessage, rootElement) {
-    return (
-        /**
-         * @function
-         * @param {DOMEvent} e
-         * @return {*}
-         */
-        function (e) {
-            if (userFacingInput.value) {
-                dirtifyInput(rootElement);
-            } else {
-                cleanup(valueInput, userFacingInput, rootElement);
-            }
-            if (isListVisible(list) && (e.which === 13 || e.which === 9)) {
-                e.stopPropagation();
-                e.preventDefault();
-                selectItem(valueInput, userFacingInput, null, rootElement, list);
-                return false;
-            }
-            if ([38, 40, 27].indexOf(e.which) === -1) {
-                e.stopPropagation();
-                return fetchList(dataSource, userFacingInput, list, emptyListMessage, rootElement)(e);
-            }
-            return null;
+var onKeyUp = function (dataSource, valueInput, userFacingInput, list, emptyListMessage, rootElement) { return function (e) {
+        if (userFacingInput.value) {
+            dirtifyInput(rootElement);
+        } else {
+            cleanup(valueInput, userFacingInput, rootElement);
         }
-    );
-};
+        if (isListVisible(list) && (e.which === 13 || e.which === 9)) {
+            e.stopPropagation();
+            e.preventDefault();
+            selectItem(valueInput, userFacingInput, null , rootElement, list);
+            return false;
+        }
+        if ([38, 40, 27].indexOf(e.which) === -1) {
+            e.stopPropagation();
+            return fetchList(dataSource, userFacingInput, list, emptyListMessage, rootElement)(e);
+        }
+        return null;
+    }; };
+
+
 
 /**
  * Reset the state of the component
@@ -448,11 +425,13 @@ var onKeyUp = function onKeyUp(dataSource, valueInput, userFacingInput, list, em
  * @param {HTMLInputElement} userFacingInput
  * @param {HTMLElement} root
  */
-var _reset = function _reset(valueInput, userFacingInput, root) {
+var reset = function (valueInput, userFacingInput, root) {
     cleanup(valueInput, userFacingInput, root);
     triggerChangeEvent('change', valueInput);
     return true;
 };
+
+
 
 /**
  * Returns promised Suggestion by key
@@ -460,9 +439,8 @@ var _reset = function _reset(valueInput, userFacingInput, root) {
  * @param  {string} keyValue
  * @return {Promise.<Suggestion>}
  */
-var getInitialValueByKey = function getInitialValueByKey(dataSource, keyValue) {
-    return dataSource.getSuggestionByKey(keyValue);
-};
+var getInitialValueByKey = function (dataSource, keyValue) { return dataSource.getSuggestionByKey(keyValue); };
+
 
 /**
  * Handles click on the component
@@ -472,46 +450,48 @@ var getInitialValueByKey = function getInitialValueByKey(dataSource, keyValue) {
  * @param {HTMLUListElement} list
  * @param {HTMLElement} rootElement
  */
-var componentClicked = function componentClicked(fetchListFn, userFacingInput, valueInput, list, rootElement) {
-    return function (e) {
-        var isInput = closestByClassName('as24-autocomplete__input')(e.target);
-        var isIcon = closestByClassName('as24-autocomplete__icon-wrapper')(e.target);
-        var isList = closestByClassName('as24-autocomplete__list')(e.target);
-        if (closestByTag(rootElement)(e.target) === rootElement) {
-            if (isInput) {
-                fetchListFn(e);
-            } else if (isIcon) {
-                if (!userFacingInput.disabled) {
-                    if (rootElement.isDirty) {
-                        _reset(valueInput, userFacingInput, rootElement);
-                        if (isListVisible(list)) {
-                            fetchListFn(e);
-                            userFacingInput.focus();
-                        }
-                        return;
-                    }
+var componentClicked = function (fetchListFn, userFacingInput, valueInput, list, rootElement) { return function (e) {
+    var isInput = closestByClassName('as24-autocomplete__input')(e.target);
+    var isIcon = closestByClassName('as24-autocomplete__icon-wrapper')(e.target);
+    var isList = closestByClassName('as24-autocomplete__list')(e.target);
+    if (closestByTag(rootElement)(e.target) === rootElement) {
+        if (isInput) {
+            fetchListFn(e);
+        }
+        else if (isIcon) {
+            if (!userFacingInput.disabled) {
+                if (rootElement.isDirty) {
+                    reset(valueInput, userFacingInput, rootElement);
                     if (isListVisible(list)) {
-                        hideList(list, rootElement)(e);
-                    } else {
-                        userFacingInput.focus();
                         fetchListFn(e);
+                        userFacingInput.focus();
                     }
-                }
-            } else if (isList) {
-                var theItem = closestByClassName('as24-autocomplete__list-item')(e.target);
-                if (theItem.dataset.unselectable) {
-                    e.stopPropagation();
                     return;
                 }
-                selectItem(valueInput, userFacingInput, theItem, rootElement);
-                rootElement.classList.add('as24-autocomplete--user-input');
-                hideList(list, rootElement)(e);
+                if (isListVisible(list)) {
+                    hideList(list, rootElement)(e);
+                } else {
+                    userFacingInput.focus();
+                    fetchListFn(e);
+                }
             }
-        } else {
+        }
+        else if (isList) {
+            var theItem = closestByClassName('as24-autocomplete__list-item')(e.target);
+            if (theItem.dataset.unselectable) {
+                e.stopPropagation();
+                return;
+            }
+            selectItem(valueInput, userFacingInput, theItem, rootElement);
+            rootElement.classList.add('as24-autocomplete--user-input');
             hideList(list, rootElement)(e);
         }
-    };
-};
+    } else {
+        hideList(list, rootElement)(e);
+    }
+}; };
+
+
 
 /**
  * When the custom tag has been attached to DOM
@@ -568,13 +548,14 @@ function elementAttached() {
 
     setTimeout(function () {
         if (valueInput.value) {
-            getInitialValueByKey(dataSource, valueInput.value).then(function (suggestion) {
-                if (suggestion) {
-                    userFacingInput.value = suggestion.value;
-                    dirtifyInput(root);
-                }
-                return true;
-            });
+            getInitialValueByKey(dataSource, valueInput.value)
+                .then(function (suggestion) {
+                    if (suggestion) {
+                        userFacingInput.value = suggestion.value;
+                        dirtifyInput(root);
+                    }
+                    return true;
+                });
         }
     });
 
@@ -584,7 +565,9 @@ function elementAttached() {
     on('mouseover', onItemMouseOver(list), list, true);
 }
 
-function elementDetached() {}
+
+
+function elementDetached() { }
 
 /**
  * @this {HTMLElement}
@@ -606,56 +589,55 @@ function onAttributeChanged(attrName, oldVal, newVal) {
     }
 }
 
-var input = function () {
+function registerInput() {
     try {
         return document.registerElement('as24-autocomplete', {
-            prototype: Object.assign(Object.create(HTMLElement.prototype, {
-                attachedCallback: { value: elementAttached },
-                detachedCallback: { value: elementDetached },
-                attributeChangedCallback: { value: onAttributeChanged }
-            }),
-            /**
-             * Public API
-             */
-            {
+            prototype: Object.assign(
+                Object.create(HTMLElement.prototype, {
+                    attachedCallback: { value: elementAttached },
+                    detachedCallback: { value: elementDetached },
+                    attributeChangedCallback: { value: onAttributeChanged }
+                }),
                 /**
-                 * Returns the selected value
-                 * @this {HTMLElement}
+                 * Public API
                  */
-                selectedValue: function selectedValue() {
-                    return $('[type=hidden]', this).value;
-                },
+                {
+                    /**
+                     * Returns the selected value
+                     * @this {HTMLElement}
+                     */
+                    selectedValue: function selectedValue() {
+                        return $('[type=hidden]', this).value;
+                    },
+                    /**
+                     * Returns what user has written
+                     * @this {HTMLElement}
+                     */
+                    userQuery: function userQuery() {
+                        return $('[type=text]', this).value;
+                    },
+                    /**
+                     * returns the bounded data source element
+                     * @this {HTMLElement}
+                     */
+                    dataSourceElement: function dataSourceElement() {
+                        return this.querySelector('[role=data-source]');
+                    },
+                    /**
+                     * Resets the component
+                     * @this {HTMLElement}
+                     */
+                    reset: function reset$1() {
+                        /** @type {HTMLInputElement} */
+                        var userFacingInput = $('[type=text]', this);
 
-                /**
-                 * Returns what user has written
-                 * @this {HTMLElement}
-                 */
-                userQuery: function userQuery() {
-                    return $('[type=text]', this).value;
-                },
+                        /** @type {HTMLInputElement} */
+                        var valueInput = $('[type=hidden]', this);
 
-                /**
-                 * returns the bounded data source element
-                 * @this {HTMLElement}
-                 */
-                dataSourceElement: function dataSourceElement() {
-                    return this.querySelector('[role=data-source]');
-                },
-
-                /**
-                 * Resets the component
-                 * @this {HTMLElement}
-                 */
-                reset: function reset() {
-                    /** @type {HTMLInputElement} */
-                    var userFacingInput = $('[type=text]', this);
-
-                    /** @type {HTMLInputElement} */
-                    var valueInput = $('[type=hidden]', this);
-
-                    return _reset(valueInput, userFacingInput, this);
+                        return reset(valueInput, userFacingInput, this);
+                    }
                 }
-            })
+            )
         });
     } catch (e) {
         if (window && window.console) {
@@ -664,249 +646,94 @@ var input = function () {
         }
     }
     return true;
-};
-
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-var createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
-
-
-
-
-
-
-
-var get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;
-
-    if (getter === undefined) {
-      return undefined;
-    }
-
-    return getter.call(receiver);
-  }
-};
-
-var inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-};
-
-
-
-
-
-
-
-
-
-
-
-var possibleConstructorReturn = function (self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-};
-
-
-
-var set = function set(object, property, value, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent !== null) {
-      set(parent, property, value, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    desc.value = value;
-  } else {
-    var setter = desc.set;
-
-    if (setter !== undefined) {
-      setter.call(receiver, value);
-    }
-  }
-
-  return value;
-};
+}
 
 /**
  * @class
  * @typedef Suggestion
  */
-var Suggestion = function () {
-    /**
-     * @property {string} key
-     * @property {string} value
-     */
-    function Suggestion(key, value) {
-        classCallCheck(this, Suggestion);
+var Suggestion = function Suggestion(key, value) {
+    this.key = key;
+    this.value = value;
+};
 
-        this.key = key;
-        this.value = value;
-    }
-
-    createClass(Suggestion, [{
-        key: 'toString',
-        value: function toString() {
-            return 'Suggestion(' + this.key + ': ' + this.value + ')';
-        }
-    }]);
-    return Suggestion;
-}();
+Suggestion.prototype.toString = function toString () {
+    return ("Suggestion(" + (this.key) + ": " + (this.value) + ")");
+};
 
 /**
  * Test the string against item's value\
  * @param {RegExp} regexp
  * @returns {function}
  */
+var valuePredicate = function (regexp) { return function (item) { return item.value.match(regexp) !== null; }; };
 
-
-var valuePredicate = function valuePredicate(regexp) {
-    return (
-        /**
-         * @param {Suggestion} item
-         */
-        function (item) {
-            return item.value.match(regexp) !== null;
-        }
-    );
-};
 
 /**
  * @class
  * @typedef DataSource
  */
-
-var DataSource = function (_HTMLElement) {
-    inherits(DataSource, _HTMLElement);
-
-    function DataSource() {
-        classCallCheck(this, DataSource);
-        return possibleConstructorReturn(this, (DataSource.__proto__ || Object.getPrototypeOf(DataSource)).apply(this, arguments));
+var DataSource = (function (HTMLElement) {
+    function DataSource () {
+        HTMLElement.apply(this, arguments);
     }
 
-    createClass(DataSource, [{
-        key: 'fetchItems',
+    if ( HTMLElement ) DataSource.__proto__ = HTMLElement;
+    DataSource.prototype = Object.create( HTMLElement && HTMLElement.prototype );
+    DataSource.prototype.constructor = DataSource;
 
-        /**
-         * @param {string} queryString
-         * @return {Promise.<Array<Suggestion>>}
-         */
-        value: function fetchItems(queryString) {
-            var _this2 = this;
+    DataSource.prototype.fetchItems = function fetchItems (queryString) {
+        var this$1 = this;
 
-            return new Promise(function (res) {
-                var keyVals = _this2.extractKeyValues();
-                var escapedQueryString = queryString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-                var startingWith = keyVals.filter(valuePredicate(new RegExp('^' + escapedQueryString, 'ig')));
-                var theRestContaining = keyVals.filter(function (x) {
-                    return startingWith.indexOf(x) === -1;
-                }).filter(valuePredicate(new RegExp('' + escapedQueryString, 'ig')));
-                return res(startingWith.concat(theRestContaining));
-            });
-        }
+        return new Promise(function (res) {
+            var keyVals = this$1.extractKeyValues();
+            var escapedQueryString = queryString.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+            var startingWith = keyVals
+                .filter(valuePredicate(new RegExp(("^" + escapedQueryString), 'ig')));
+            var theRestContaining = keyVals
+                .filter(function (x) { return startingWith.indexOf(x) === -1; })
+                .filter(valuePredicate(new RegExp(("" + escapedQueryString), 'ig')));
+            return res(startingWith.concat(theRestContaining));
+        });
+    };
 
-        /**
-         * @param {string} keyValue
-         * @return {Promise.<Suggestion>}
-         */
+    /**
+     * @param {string} keyValue
+     * @return {Promise.<Suggestion>}
+     */
+    DataSource.prototype.getSuggestionByKey = function getSuggestionByKey (keyValue) {
+        var this$1 = this;
 
-    }, {
-        key: 'getSuggestionByKey',
-        value: function getSuggestionByKey(keyValue) {
-            var _this3 = this;
+        return new Promise(function (res, rej) {
+            var items = this$1.extractKeyValues();
+            if (keyValue && items) {
+                return res(items.filter(function (item) { return item.key === keyValue; })[0]);
+            }
+            return rej(null);
+        });
+    };
 
-            return new Promise(function (res, rej) {
-                var items = _this3.extractKeyValues();
-                if (keyValue && items) {
-                    return res(items.filter(function (item) {
-                        return item.key === keyValue;
-                    })[0]);
-                }
-                return rej(null);
-            });
-        }
+    /**
+     * Extracts a list of objects like { key:string, value:string }
+     * @returns {Array<{key:string, value:string}>}
+     */
+    DataSource.prototype.extractKeyValues = function extractKeyValues () {
+        return Array.prototype.slice.call(this.querySelectorAll('item')).map(function (tag) { return new Suggestion(tag.getAttribute('key'), tag.getAttribute('value')); }
+        );
+    };
 
-        /**
-         * Extracts a list of objects like { key:string, value:string }
-         * @returns {Array<{key:string, value:string}>}
-         */
-
-    }, {
-        key: 'extractKeyValues',
-        value: function extractKeyValues() {
-            return Array.prototype.slice.call(this.querySelectorAll('item')).map(function (tag) {
-                return new Suggestion(tag.getAttribute('key'), tag.getAttribute('value'));
-            });
-        }
-    }]);
     return DataSource;
-}(HTMLElement);
+}(HTMLElement));
 
-var tagsDataSource = function () {
+function registerDS() {
     try {
         return document.registerElement('as24-tags-data-source', DataSource);
     } catch (e) {
         return null;
     }
-};
+}
 
-var as24Autocomplete = (function init() {
-    var inputCtr = input();
-    var tagsDataSourceCtr = tagsDataSource();
-    return { inputCtr: inputCtr, tagsDataSourceCtr: tagsDataSourceCtr };
-})();
+registerInput();
+registerDS();
 
-return as24Autocomplete;
-
-}());
+//# sourceMappingURL=as24-autocomplete.js.map
