@@ -107,10 +107,8 @@ as24-autocomplete {
     &__icon-dropdown,
     &__icon-cross {
         position: absolute;
-        top: 50%;
-        height: 16px;
-        width: 16px;
-        left: 50%;
+        height: 10px;
+        width: 10px;
         transform: translate(-50%, -50%);
 
         &__icon{
@@ -119,24 +117,18 @@ as24-autocomplete {
             transform: translateY(-50%);
             fill: $black-60;
         }
-
-        &:before{
-            content: '';
-            z-index: 0;
-            position: absolute;
-            top: -11px;
-            left: -16px;
-            width: 48px;
-            height: 38px;
-        }
-
     }
 
     &__icon-dropdown {
+        top: 10px;
+        left: 17px;
         display: block;
     }
 
     &__icon-cross {
+        fill: #949494;
+        top: 12px;
+        left: 18px;
         display: none;
     }
 
@@ -199,7 +191,5 @@ as24-autocomplete {
         text-transform: uppercase;
         letter-spacing: 2px;
         padding-top: 16px;
-
     }
-
 }
