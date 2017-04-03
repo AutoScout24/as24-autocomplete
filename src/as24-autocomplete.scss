@@ -107,8 +107,6 @@ as24-autocomplete {
     &__icon-dropdown,
     &__icon-cross {
         position: absolute;
-        height: 10px;
-        width: 10px;
         transform: translate(-50%, -50%);
 
         &__icon{
@@ -116,6 +114,11 @@ as24-autocomplete {
             top: 50%;
             transform: translateY(-50%);
             fill: $black-60;
+        }
+
+        svg {
+            height: 10px;
+            width: 10px;
         }
     }
 
