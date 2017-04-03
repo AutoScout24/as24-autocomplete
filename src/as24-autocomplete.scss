@@ -102,37 +102,21 @@ as24-autocomplete {
         margin-top: 0;
         cursor: pointer;
         transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
     }
 
     &__icon-dropdown,
     &__icon-cross {
-        position: absolute;
-        transform: translate(-50%, -50%);
-
-        &__icon{
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+        &__icon {
             fill: $black-60;
             width: 10px;
         }
-
-        svg {
-            height: 10px;
-            width: 10px;
-        }
-    }
-
-    &__icon-dropdown {
-        top: 10px;
-        left: 17px;
-        display: block;
     }
 
     &__icon-cross {
         fill: #949494;
-        top: 12px;
-        left: 18px;
         display: none;
     }
 
