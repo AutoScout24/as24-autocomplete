@@ -163,7 +163,7 @@ class AutocompleteInput extends HTMLElement {
         }, this);
 
         on('click', (e) => {
-            if (closestByTag(this)(e.target) === this) {
+            if (e.target && closestByTag(this)(e.target) === this) {
                 return;
             }
             if (this.list.isVisible()) {
