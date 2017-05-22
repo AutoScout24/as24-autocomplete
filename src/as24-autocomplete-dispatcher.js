@@ -163,7 +163,7 @@ class AutocompleteInput extends HTMLElement {
         }, this);
 
         on('click', (e) => {
-            if (e.target && closestByTag(this)(e.target) === this) {
+            if(!document.querySelector('.as24-autocomplete--active') || closestByTag(this)(e.target) === this){
                 return;
             }
             if (this.list.isVisible()) {
