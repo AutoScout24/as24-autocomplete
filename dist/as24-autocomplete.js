@@ -15,7 +15,9 @@ var $$ = function (selector, root) { return root.querySelectorAll(selector); };
  * @param {HTMLElement} tag
  * @returns {function}
  */
-var closestByTag = function (tag) { return function (elem) { return elem.tagName === 'HTML'
+var closestByTag = function (tag) { return function (elem) { return ! elem
+            ? null
+            : elem.tagName === 'HTML'
             ? null
             : elem === tag
                 ? tag
@@ -876,7 +878,7 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         }, this);
 
         on('click', function (e) {
-            if (e.target && closestByTag(this$1)(e.target) === this$1) {
+            if(!document.querySelector('.as24-autocomplete--active') || closestByTag(this$1)(e.target) === this$1){
                 return;
             }
             if (this$1.list.isVisible()) {

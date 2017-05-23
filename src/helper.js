@@ -23,7 +23,9 @@ export const closestByTag = tag =>
      * @return {HTMLElement|null}
      */
     elem =>
-        elem.tagName === 'HTML'
+        ! elem
+            ? null
+            : elem.tagName === 'HTML'
             ? null
             : elem === tag
                 ? tag
