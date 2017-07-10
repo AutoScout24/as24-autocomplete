@@ -35,6 +35,20 @@ class AutocompleteInput extends HTMLElement {
         return this.dataSource.getSuggestionByKey(this.valueInput.value);
     }
 
+    setValue(value) {
+        this.setKeyLabelPair(value, value);
+    }
+
+    setKeyLabelPair(key, label) {
+        this.valueInput.value = key;
+        this.userFacingInput.setValue(label);
+        this.userFacingInput.isOpened = false;
+        this.list.hide();
+        this.classList.remove('as24-autocomplete--active');
+        this.classList.add('as24-autocomplete--user-input');
+        triggerEvent('change', this);
+    }
+
     attachedCallback() {
         this.emptyListMessage = this.getAttribute('empty-list-message') || '---';
 
@@ -68,13 +82,7 @@ class AutocompleteInput extends HTMLElement {
 
         on('as24-autocomplete:suggestion:selected', (e) => {
             e.stopPropagation();
-            this.valueInput.value = e.target.dataset.key;
-            this.userFacingInput.setValue(e.target.dataset.label);
-            this.userFacingInput.isOpened = false;
-            this.list.hide();
-            this.classList.remove('as24-autocomplete--active');
-            this.classList.add('as24-autocomplete--user-input');
-            triggerEvent('change', this);
+            this.setKeyLabelPair(e.target.dataset.key, e.target.dataset.label)
         }, this);
 
         on('as24-autocomplete:input:trigger-suggestions', (e) => {
