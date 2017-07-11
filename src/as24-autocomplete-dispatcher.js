@@ -66,7 +66,7 @@ class AutocompleteInput extends HTMLElement {
 
         this.isDirty = false;
 
-        //setTimeout(() => {
+        setTimeout(() => {
             if (this.valueInput.value) {
                 this.getInitialValueByKey()
                     .then(suggestion => {
@@ -78,7 +78,7 @@ class AutocompleteInput extends HTMLElement {
                         return true;
                     });
             }
-        //});
+        });
 
         on('as24-autocomplete:suggestion:selected', (e) => {
             e.stopPropagation();
