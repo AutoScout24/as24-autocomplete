@@ -748,6 +748,20 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         return this.dataSource.getSuggestionByKey(this.valueInput.value);
     };
 
+    AutocompleteInput.prototype.setValue = function setValue (value) {
+        this.setKeyLabelPair(value, value);
+    };
+
+    AutocompleteInput.prototype.setKeyLabelPair = function setKeyLabelPair (key, label) {
+        this.valueInput.value = key;
+        this.userFacingInput.setValue(label);
+        this.userFacingInput.isOpened = false;
+        this.list.hide();
+        this.classList.remove('as24-autocomplete--active');
+        this.classList.add('as24-autocomplete--user-input');
+        triggerEvent('change', this);
+    };
+
     AutocompleteInput.prototype.attachedCallback = function attachedCallback () {
         var this$1 = this;
 
@@ -767,9 +781,9 @@ var AutocompleteInput$1 = (function (HTMLElement) {
 
         this.isDirty = false;
 
-        //setTimeout(() => {
-            if (this.valueInput.value) {
-                this.getInitialValueByKey()
+        setTimeout(function () {
+            if (this$1.valueInput.value) {
+                this$1.getInitialValueByKey()
                     .then(function (suggestion) {
                         if (suggestion) {
                             this$1.userFacingInput.setValue(suggestion.value);
@@ -779,17 +793,11 @@ var AutocompleteInput$1 = (function (HTMLElement) {
                         return true;
                     });
             }
-        //});
+        });
 
         on('as24-autocomplete:suggestion:selected', function (e) {
             e.stopPropagation();
-            this$1.valueInput.value = e.target.dataset.key;
-            this$1.userFacingInput.setValue(e.target.dataset.label);
-            this$1.userFacingInput.isOpened = false;
-            this$1.list.hide();
-            this$1.classList.remove('as24-autocomplete--active');
-            this$1.classList.add('as24-autocomplete--user-input');
-            triggerEvent('change', this$1);
+            this$1.setKeyLabelPair(e.target.dataset.key, e.target.dataset.label);
         }, this);
 
         on('as24-autocomplete:input:trigger-suggestions', function (e) {

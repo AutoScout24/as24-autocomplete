@@ -5,7 +5,6 @@
   color: #333;
   width: 100%;
   line-height: 1.5;
-  -webkit-transition: all 0.2s ease-in;
   transition: all 0.2s ease-in;
   outline: none;
   cursor: pointer; }
@@ -52,7 +51,6 @@ as24-autocomplete {
   display: block; }
 
 .as24-autocomplete__input {
-  -webkit-transition: none;
   transition: none; }
   .as24-autocomplete__input::-ms-clear {
     display: none; }
