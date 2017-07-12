@@ -3,6 +3,7 @@
   "version": "3.0.12",
   "description": "Autocomplete component",
   "main": "dist/as24-autocomplete.js",
+  "types": "dist/as24-autocomplete.d.ts",
   "jsnext:main": "dist/as24-autocomplete.es6.js",
   "style": "src/as24-autocomplete.scss",
   "scripts": {
