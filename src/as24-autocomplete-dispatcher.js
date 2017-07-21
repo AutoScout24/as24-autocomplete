@@ -25,7 +25,7 @@ class AutocompleteInput extends HTMLElement {
     }
 
     userQueryElement() {
-        return this.userQueryElement;
+        return this.userQueryEl;
     }
 
     reset() {
@@ -66,7 +66,7 @@ class AutocompleteInput extends HTMLElement {
 
         this.userFacingInput = $('as24-autocomplete-input', this);
 
-        this.userQueryElement = $('[data-role="user-query"]', this);
+        this.userQueryEl = $('[data-role="user-query"]', this);
 
         this.valueInput = $('input[data-role="value"]', this);
 
