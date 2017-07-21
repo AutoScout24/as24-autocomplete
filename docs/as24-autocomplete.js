@@ -737,6 +737,10 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         return this.valueInput;
     };
 
+    AutocompleteInput.prototype.userQueryElement = function userQueryElement () {
+        return this.userQueryElement;
+    };
+
     AutocompleteInput.prototype.reset = function reset () {
         this.userFacingInput.setValue('');
         this.valueInput.value = '';
@@ -776,6 +780,8 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         this.emptyListMessage = this.getAttribute('empty-list-message') || '---';
 
         this.userFacingInput = $('as24-autocomplete-input', this);
+
+        this.userQueryElement = $('[data-role="user-query"]', this);
 
         this.valueInput = $('input[data-role="value"]', this);
 

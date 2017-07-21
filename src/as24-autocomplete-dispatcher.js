@@ -24,6 +24,10 @@ class AutocompleteInput extends HTMLElement {
         return this.valueInput;
     }
 
+    userQueryElement() {
+        return this.userQueryElement;
+    }
+
     reset() {
         this.userFacingInput.setValue('');
         this.valueInput.value = '';
@@ -61,6 +65,8 @@ class AutocompleteInput extends HTMLElement {
         this.emptyListMessage = this.getAttribute('empty-list-message') || '---';
 
         this.userFacingInput = $('as24-autocomplete-input', this);
+
+        this.userQueryElement = $('[data-role="user-query"]', this);
 
         this.valueInput = $('input[data-role="value"]', this);
 

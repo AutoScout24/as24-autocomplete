@@ -10,6 +10,8 @@ export module Autocomplete {
 
         valueInputElement(): HTMLInputElement;
 
+        userQueryElement(): HTMLInputElement;
+
         reset(): void;
 
         getInitialValueByKey(): string;
