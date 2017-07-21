@@ -8,7 +8,7 @@ export module Autocomplete {
 
         dataSourceElement(): Element;
 
-        valueInputElement(): Element;
+        valueInputElement(): HTMLInputElement;
 
         reset(): void;
 
