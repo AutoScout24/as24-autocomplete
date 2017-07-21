@@ -12,8 +12,16 @@ class AutocompleteInput extends HTMLElement {
         return this.userFacingInput.getValue();
     }
 
+    userFacingInputElement() {
+        return this.userFacingInput;
+    }
+
     dataSourceElement() {
         return this.dataSource;
+    }
+
+    valueInputElement() {
+        return this.valueInput;
     }
 
     reset() {

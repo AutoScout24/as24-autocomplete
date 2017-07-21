@@ -725,8 +725,16 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         return this.userFacingInput.getValue();
     };
 
+    AutocompleteInput.prototype.userFacingInputElement = function userFacingInputElement () {
+        return this.userFacingInput;
+    };
+
     AutocompleteInput.prototype.dataSourceElement = function dataSourceElement () {
         return this.dataSource;
+    };
+
+    AutocompleteInput.prototype.valueInputElement = function valueInputElement () {
+        return this.valueInput;
     };
 
     AutocompleteInput.prototype.reset = function reset () {
