@@ -158,30 +158,23 @@ var AutocompleteInput = (function (HTMLElement) {
         triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
     };
 
-    AutocompleteInput.prototype.onDropDownClick = function onDropDownClick () {
-        if(this.input.disabled) { return; }
-        this.input.focus();
-        if (this.isOpened) {
-            this.isOpened = false;
-            triggerEvent('as24-autocomplete:input:close', this.input);
-        } else {
-            this.isOpened = true;
-            triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
-        }
-    };
-
     AutocompleteInput.prototype.onCrossClick = function onCrossClick () {
-        if(this.input.disabled) { return; }
+        if (this.input.disabled) { return; }
         this.input.focus();
+
         if (this.input.value === '') {
-            this.isOpened = false;
-            triggerEvent('as24-autocomplete:input:close', this.input);
-        } else {
-            this.input.value = '';
-            triggerEvent('as24-autocomplete:input:cleanup', this.input);
             if (this.isOpened) {
+                this.isOpened = false;
+                triggerEvent('as24-autocomplete:input:close', this.input);
+            } else {
+                this.isOpened = true;
                 triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
             }
+        } else {
+            this.input.value = '';
+            this.isOpened = true;
+            triggerEvent('as24-autocomplete:input:cleanup', this.input);
+            triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
         }
     };
 
@@ -189,11 +182,9 @@ var AutocompleteInput = (function (HTMLElement) {
         this.isOpened = false;
         this.isDirty = false;
         this.dropDown = $('.as24-autocomplete__icon-wrapper', this);
-        this.cross = $('.as24-autocomplete__icon-cross', this);
         this.input = $('input', this);
         on('click', this.onInputClick.bind(this), this.input);
-        on('click', this.onDropDownClick.bind(this), this.dropDown);
-        on('click', this.onCrossClick.bind(this), this.cross);
+        on('click', this.onCrossClick.bind(this), this.dropDown);
         on('keyup', this.onKeyUp.bind(this), this.input, true);
         on('keydown', this.onKeyDown.bind(this), this.input, true);
     };
