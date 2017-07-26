@@ -1,5 +1,4 @@
-import { $, on, closestByTag, triggerEvent } from './helper';
-
+import {$, closestByTag, on, triggerEvent} from './helper';
 
 
 class AutocompleteInput extends HTMLElement {
@@ -61,6 +60,15 @@ class AutocompleteInput extends HTMLElement {
         triggerEvent('change', this);
     }
 
+    showList() {
+        this.userQueryEl.placeholder = ""; // remove placeholder to avoid flickering
+        this.list.show();
+    }
+
+    restorePlaceholder() {
+        this.userQueryEl.placeholder = this.placeholder; // restore placeholder
+    }
+
     attachedCallback() {
         this.emptyListMessage = this.getAttribute('empty-list-message') || '---';
 
@@ -73,6 +81,8 @@ class AutocompleteInput extends HTMLElement {
         this.list = $('[data-role="list"]', this);
 
         this.dataSource = this.querySelector('[role=data-source]');
+
+        this.placeholder = this.userQueryEl.placeholder;
 
         if (!this.dataSource) {
             throw new Error('The DataSource has not been found');
@@ -94,6 +104,16 @@ class AutocompleteInput extends HTMLElement {
             }
         });
 
+        on('mouseleave', () => {
+            this.restorePlaceholder();
+        }, this);
+
+        on('keydown', (e) => {
+            if (e.key === 'Tab') {
+                this.restorePlaceholder();
+            }
+        }, this);
+
         on('as24-autocomplete:suggestion:selected', (e) => {
             e.stopPropagation();
             this.setKeyLabelPair(e.target.dataset.key, e.target.dataset.label)
@@ -101,9 +121,11 @@ class AutocompleteInput extends HTMLElement {
 
         on('as24-autocomplete:input:trigger-suggestions', (e) => {
             e.stopPropagation();
+
             if (!this.list.isVisible()) {
-                this.list.show();
+                this.showList();
             }
+
             this.classList.add('as24-autocomplete--active');
             this.fetchList(this.userFacingInput.getValue()).then(() => this.list.moveSelection(1));
         }, this);
