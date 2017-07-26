@@ -55,12 +55,12 @@ class PlainSuggestionsList extends HTMLElement {
 
     onItemMouseOver(e) {
         e.stopPropagation();
-        const preselected = $('.as24-autocomplete__list-item--preselected', this);
+        const selected = $('.as24-autocomplete__list-item--selected', this);
         if (e.target.tagName === 'LI') {
-            if (preselected) {
-                preselected.classList.remove('as24-autocomplete__list-item--preselected');
+            if (selected) {
+                selected.classList.remove('as24-autocomplete__list-item--selected');
             }
-            e.target.classList.add('as24-autocomplete__list-item--preselected');
+            e.target.classList.add('as24-autocomplete__list-item--selected');
         }
     }
 
