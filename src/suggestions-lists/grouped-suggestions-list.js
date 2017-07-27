@@ -57,6 +57,10 @@ class GroupedSuggestionsList extends HTMLElement {
         }
     }
 
+    moveSelectionMultiple(dir, times) {
+        Array(times).fill(1).forEach(_ => this.moveSelection(1));
+    }
+
     onItemMouseOver(e) {
         e.stopPropagation();
         const selected = $('.as24-autocomplete__list-item--selected', this);
