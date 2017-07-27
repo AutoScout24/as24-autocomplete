@@ -53,6 +53,10 @@ class PlainSuggestionsList extends HTMLElement {
         this.scrollToSelectedItem(nextActiveItem);
     }
 
+    moveSelectionMultiple(dir, times) {
+        Array(times).fill(1).forEach(_ => this.moveSelection(1));
+    }
+
     onItemMouseOver(e) {
         e.stopPropagation();
         const preselected = $('.as24-autocomplete__list-item--preselected', this);

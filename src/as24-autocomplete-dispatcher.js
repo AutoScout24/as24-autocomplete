@@ -126,8 +126,12 @@ class AutocompleteInput extends HTMLElement {
                 this.showList();
             }
 
+            const selectedValue = this.selectedValue();
             this.classList.add('as24-autocomplete--active');
-            this.fetchList(this.userFacingInput.getValue()).then(() => this.list.moveSelection(1));
+
+            this.fetchList(selectedValue ? '' : this.userFacingInput.getValue())
+                .then(() => selectedValue ? this.dataSourceElement().extractKeyValues().findIndex(i => i.key === selectedValue) + 1  : 0)
+                .then(indexToSelect => this.list.moveSelectionMultiple(1, indexToSelect));
         }, this);
 
         on('as24-autocomplete:input:focus-lost', (e) => {

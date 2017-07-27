@@ -110,6 +110,15 @@ class GroupedItemsDataSource extends HTMLElement {
                     : res;
             }, []);
     }
+
+    /**
+     * Extracts a list of objects like { key:string, value:string }
+     * @returns {Array<{key:string, value:string}>}
+     */
+    extractKeyValues() {
+        return Array.prototype.slice.call(this.querySelectorAll('item')).map(tag =>
+            new Suggestion(tag.getAttribute('key'), tag.getAttribute('value')));
+    }
 }
 
 export default function registerDS() {
