@@ -1,4 +1,4 @@
-import {$, on, triggerEvent} from './helper';
+import { $, on, triggerEvent } from './helper';
 
 /**
  * @class
@@ -70,7 +70,7 @@ class AutocompleteInput extends HTMLElement {
         return null;
     }
 
-    onInputClick() {
+    onInputFocus() {
         this.isOpened = true;
         triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
     }
@@ -95,15 +95,30 @@ class AutocompleteInput extends HTMLElement {
         }
     }
 
+    onBlur() {
+        setTimeout(() => {
+            if (this.input.value === '') {
+                if (this.isOpened) {
+                    this.isOpened = false;
+                    triggerEvent('as24-autocomplete:input:restore-placeholder', this.input);
+                    triggerEvent('as24-autocomplete:input:close', this.input);
+                }
+            } else {
+                triggerEvent('as24-autocomplete:input:focus-lost', this.input);
+            }
+        }, 100)
+    }
+
     attachedCallback() {
         this.isOpened = false;
         this.isDirty = false;
         this.dropDown = $('.as24-autocomplete__icon-wrapper', this);
         this.input = $('input', this);
-        on('click', this.onInputClick.bind(this), this.input);
-        on('click', this.onCrossClick.bind(this), this.dropDown);
+        on('focus', this.onInputFocus.bind(this), this.input);
         on('keyup', this.onKeyUp.bind(this), this.input, true);
         on('keydown', this.onKeyDown.bind(this), this.input, true);
+        on('click', this.onCrossClick.bind(this), this.dropDown);
+        on('blur', this.onBlur.bind(this), this.input, this.dropDown);
     }
 
 }

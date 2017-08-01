@@ -1,5 +1,4 @@
-/* eslint-disable max-len */
-import {$, closestByTag, on, triggerEvent} from './helper';
+import { $, closestByTag, on, triggerEvent } from './helper';
 
 
 class AutocompleteInput extends HTMLElement {
@@ -85,7 +84,7 @@ class AutocompleteInput extends HTMLElement {
 
         this.placeholder = this.userQueryEl.placeholder;
 
-        if (!this.dataSource) {
+        if (! this.dataSource) {
             throw new Error('The DataSource has not been found');
         }
 
@@ -124,10 +123,15 @@ class AutocompleteInput extends HTMLElement {
             this.setKeyLabelPair(e.target.dataset.key, e.target.dataset.label)
         }, this);
 
+        on('as24-autocomplete:input:restore-placeholder', (e) => {
+            e.stopPropagation();
+            this.restorePlaceholder()
+        }, this);
+
         on('as24-autocomplete:input:trigger-suggestions', (e) => {
             e.stopPropagation();
 
-            if (!this.list.isVisible()) {
+            if (! this.list.isVisible()) {
                 this.showList();
             }
 
@@ -135,17 +139,17 @@ class AutocompleteInput extends HTMLElement {
             this.classList.add('as24-autocomplete--active');
 
             this.fetchList(selectedValue ? '' : this.userFacingInput.getValue())
-                .then(() => selectedValue ? this.dataSourceElement().extractKeyValues().findIndex(i => i.key === selectedValue) + 1  : 0)
+                .then(() => selectedValue ? this.dataSourceElement().extractKeyValues().findIndex(i => i.key === selectedValue) + 1 : 0)
                 .then(indexToSelect => this.list.moveSelectionMultiple(1, indexToSelect));
         }, this);
 
         on('as24-autocomplete:input:focus-lost', (e) => {
             e.stopPropagation();
-            if (this.userFacingInput.getValue() !== '' && !this.list.isEmpty()) {
-              this.list.selectItem();
-            } else  {
-              this.list.hide();
-              this.classList.remove('as24-autocomplete--active');
+            if (this.userFacingInput.getValue() !== '' && ! this.list.isEmpty()) {
+                this.list.selectItem();
+            } else {
+                this.list.hide();
+                this.classList.remove('as24-autocomplete--active');
             }
         }, this);
 
@@ -171,11 +175,11 @@ class AutocompleteInput extends HTMLElement {
                 this.classList.remove('as24-autocomplete--user-input');
             }
             this.fetchList(this.userFacingInput.getValue()).then(() => {
-              this.list.moveSelection(1);
-              if (this.valueInput.value.length > 0 && (this.userFacingInput.getValue() === '' || this.list.isEmpty())) {
-                  this.valueInput.value = '';
-                  triggerEvent('change', this);
-              }
+                this.list.moveSelection(1);
+                if (this.valueInput.value.length > 0 && (this.userFacingInput.getValue() === '' || this.list.isEmpty())) {
+                    this.valueInput.value = '';
+                    triggerEvent('change', this);
+                }
             });
         }, this);
 
@@ -211,17 +215,17 @@ class AutocompleteInput extends HTMLElement {
         on('as24-autocomplete:input:go-up', (e) => {
             e.stopPropagation();
             if (this.list.isVisible()) {
-                this.list.moveSelection(-1);
+                this.list.moveSelection(- 1);
             }
         }, this);
 
         on('click', (e) => {
-            if(!document.querySelector('.as24-autocomplete--active') || closestByTag(this)(e.target) === this){
+            if (! document.querySelector('.as24-autocomplete--active') || closestByTag(this)(e.target) === this) {
                 return;
             }
             if (this.list.isVisible()) {
-                if (this.userFacingInput.getValue() !== '' && !this.list.isEmpty()) {
-                  this.list.selectItem();
+                if (this.userFacingInput.getValue() !== '' && ! this.list.isEmpty()) {
+                    this.list.selectItem();
                 }
                 this.list.hide();
                 this.userFacingInput.isOpened = false;
@@ -235,12 +239,11 @@ class AutocompleteInput extends HTMLElement {
             this.userFacingInput.setDisabled((oldVal !== newVal) && (newVal === 'true' || newVal === 'disabled'));
             this.classList[
                 this.userFacingInput.isDisabled() ? 'add' : 'remove'
-            ]('as24-autocomplete--disabled');
+                ]('as24-autocomplete--disabled');
             this.list.hide();
         }
     }
 }
-
 
 
 export default function register() {
