@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {$, closestByTag, on, triggerEvent} from './helper';
 
 
@@ -90,7 +91,9 @@ class AutocompleteInput extends HTMLElement {
 
         this.isDirty = false;
 
-        // userQueryEl.autocomplete = "off"; // make sure dropdown is not hidden by browsers autocompletion feature, unfortunately not in every browser
+        if ('autocomplete' in this.userQueryEl) {
+            this.userQueryEl.autocomplete = 'off'; // make sure dropdown is not hidden by browsers autocompletion feature, unfortunately not in every browser
+        }
 
         setTimeout(() => {
             if (this.valueInput.value) {

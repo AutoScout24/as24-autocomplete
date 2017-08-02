@@ -76,10 +76,6 @@ var closestByClassName = function (className) { return function (elem) { return 
                 ? elem
                 : closestByClassName(className)(elem.parentNode); }; };
 
-/**
- * @class
- * @typedef SeparatedItemsDataSource
- */
 var AutocompleteInput = (function (HTMLElement) {
     function AutocompleteInput () {
         HTMLElement.apply(this, arguments);
@@ -213,13 +209,16 @@ Suggestion.prototype.toString = function toString () {
     return ("Suggestion(" + (this.key) + ": " + (this.value) + ")");
 };
 
+var trimString = function (str) { return str.split(String.fromCharCode(92)).join('') // remove all backslashes
+        .split('&nbsp').join('')
+        .trim(); };
+
 /**
  * Test the string against item's value\
  * @param {RegExp} regexp
  * @returns {function}
  */
-var valuePredicate = function (regexp) { return function (item) { return item.value.match(regexp) !== null; }; };
-
+var matchValuePredicate = function (regexp) { return function (item) { return trimString(item.value).match(regexp) !== null; }; };
 
 /**
  * @class
@@ -238,12 +237,19 @@ var PlainDataSource = (function (HTMLElement) {
         var this$1 = this;
 
         return new Promise(function (res) {
+            var trimmedQueryString = trimString(queryString);
             var keyVals = this$1.extractKeyValues();
+
+            var startPredicate = matchValuePredicate(new RegExp(("^" + trimmedQueryString), 'ig'));
+            var restPredicate = matchValuePredicate(new RegExp(("" + trimmedQueryString), 'ig'));
+
             var startingWith = keyVals
-                .filter(valuePredicate(new RegExp(("^" + queryString), 'ig')));
+                .filter(function (x) { return startPredicate(x); });
+
             var theRestContaining = keyVals
-                .filter(function (x) { return startingWith.indexOf(x) === -1; })
-                .filter(valuePredicate(new RegExp(("" + queryString), 'ig')));
+                    .filter(function (x) { return startingWith.indexOf(x) === -1; })
+                    .filter(function (x) { return restPredicate(x); });
+
             return res(startingWith.concat(theRestContaining));
         });
     };
@@ -312,7 +318,7 @@ SuggestionsGroup.prototype.toString = function toString () {
  * @param {string|undefined} key
  * @returns {function}
  */
-var valuePredicate$1 = function (regexp, key) { return function (sugg) { return regexp !== null
+var valuePredicate = function (regexp, key) { return function (sugg) { return regexp !== null
             ? sugg.value.match(regexp) !== null
             : typeof key !== 'undefined'
                 ? sugg.key === key
@@ -348,7 +354,7 @@ var GroupedItemsDataSource = (function (HTMLElement) {
         return new Promise(function (res, rej) {
             var item = Array.prototype.slice.call(this$1.querySelectorAll('item'))
                 .map(function (i) { return new Suggestion$1(i.getAttribute('key'), i.getAttribute('value')); })
-                .filter(valuePredicate$1(null, theKey));
+                .filter(valuePredicate(null, theKey));
             if (item.length) {
                 return res(item[0]);
             }
@@ -368,11 +374,11 @@ var GroupedItemsDataSource = (function (HTMLElement) {
         );
 
         var startingWith = kvs
-            .filter(valuePredicate$1(new RegExp(("^" + queryString), 'ig'), theKey));
+            .filter(valuePredicate(new RegExp(("^" + queryString), 'ig'), theKey));
 
         var theRestContaining = kvs
             .filter(function (x) { return startingWith.indexOf(x) === -1; })
-            .filter(valuePredicate$1(new RegExp(("" + queryString), 'ig'), theKey));
+            .filter(valuePredicate(new RegExp(("" + queryString), 'ig'), theKey));
 
         return startingWith.concat(theRestContaining);
     };
@@ -389,6 +395,14 @@ var GroupedItemsDataSource = (function (HTMLElement) {
             }, []);
     };
 
+    /**
+     * Extracts a list of objects like { key:string, value:string }
+     * @returns {Array<{key:string, value:string}>}
+     */
+    GroupedItemsDataSource.prototype.extractKeyValues = function extractKeyValues () {
+        return Array.prototype.slice.call(this.querySelectorAll('item')).map(function (tag) { return new Suggestion$1(tag.getAttribute('key'), tag.getAttribute('value')); });
+    };
+
     return GroupedItemsDataSource;
 }(HTMLElement));
 
@@ -400,10 +414,6 @@ function registerDS$2() {
     }
 }
 
-/**
- * @class
- * @typedef PlainSuggestionsList
- */
 var PlainSuggestionsList = (function (HTMLElement) {
     function PlainSuggestionsList () {
         HTMLElement.apply(this, arguments);
@@ -458,14 +468,20 @@ var PlainSuggestionsList = (function (HTMLElement) {
         this.scrollToSelectedItem(nextActiveItem);
     };
 
+    PlainSuggestionsList.prototype.moveSelectionMultiple = function moveSelectionMultiple (dir, times) {
+        var this$1 = this;
+
+        Array(times).fill(1).forEach(function (_) { return this$1.moveSelection(1); });
+    };
+
     PlainSuggestionsList.prototype.onItemMouseOver = function onItemMouseOver (e) {
         e.stopPropagation();
-        var preselected = $('.as24-autocomplete__list-item--preselected', this);
+        var selected = $('.as24-autocomplete__list-item--selected', this);
         if (e.target.tagName === 'LI') {
-            if (preselected) {
-                preselected.classList.remove('as24-autocomplete__list-item--preselected');
+            if (selected) {
+                selected.classList.remove('as24-autocomplete__list-item--selected');
             }
-            e.target.classList.add('as24-autocomplete__list-item--preselected');
+            e.target.classList.add('as24-autocomplete__list-item--selected');
         }
     };
 
@@ -537,10 +553,6 @@ function registerDS$3() {
     }
 }
 
-/**
- * @class
- * @typedef GroupedSuggestionsList
- */
 var GroupedSuggestionsList = (function (HTMLElement) {
     function GroupedSuggestionsList () {
         HTMLElement.apply(this, arguments);
@@ -599,14 +611,20 @@ var GroupedSuggestionsList = (function (HTMLElement) {
         }
     };
 
+    GroupedSuggestionsList.prototype.moveSelectionMultiple = function moveSelectionMultiple (dir, times) {
+        var this$1 = this;
+
+        Array(times).fill(1).forEach(function (_) { return this$1.moveSelection(1); });
+    };
+
     GroupedSuggestionsList.prototype.onItemMouseOver = function onItemMouseOver (e) {
         e.stopPropagation();
-        var preselected = $('.as24-autocomplete__list-item--preselected', this);
+        var selected = $('.as24-autocomplete__list-item--selected', this);
         if (e.target.tagName === 'LI') {
-            if (preselected) {
-                preselected.classList.remove('as24-autocomplete__list-item--preselected');
+            if (selected) {
+                selected.classList.remove('as24-autocomplete__list-item--selected');
             }
-            e.target.classList.add('as24-autocomplete__list-item--preselected');
+            e.target.classList.add('as24-autocomplete__list-item--selected');
         }
     };
 
@@ -699,6 +717,7 @@ function registerDS$4() {
     }
 }
 
+/* eslint-disable max-len */
 var AutocompleteInput$1 = (function (HTMLElement) {
     function AutocompleteInput () {
         HTMLElement.apply(this, arguments);
@@ -765,6 +784,15 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         triggerEvent('change', this);
     };
 
+    AutocompleteInput.prototype.showList = function showList () {
+        this.userQueryEl.placeholder = ""; // remove placeholder to avoid flickering
+        this.list.show();
+    };
+
+    AutocompleteInput.prototype.restorePlaceholder = function restorePlaceholder () {
+        this.userQueryEl.placeholder = this.placeholder; // restore placeholder
+    };
+
     AutocompleteInput.prototype.attachedCallback = function attachedCallback () {
         var this$1 = this;
 
@@ -780,11 +808,17 @@ var AutocompleteInput$1 = (function (HTMLElement) {
 
         this.dataSource = this.querySelector('[role=data-source]');
 
+        this.placeholder = this.userQueryEl.placeholder;
+
         if (!this.dataSource) {
             throw new Error('The DataSource has not been found');
         }
 
         this.isDirty = false;
+        
+        if ('autocomplete' in this.userQueryEl) {
+            this.userQueryEl.autocomplete = 'off'; // make sure dropdown is not hidden by browsers autocompletion feature, unfortunately not in every browser
+        }
 
         setTimeout(function () {
             if (this$1.valueInput.value) {
@@ -800,6 +834,16 @@ var AutocompleteInput$1 = (function (HTMLElement) {
             }
         });
 
+        on('mouseleave', function () {
+            this$1.restorePlaceholder();
+        }, this);
+
+        on('keydown', function (e) {
+            if (e.key === 'Tab') {
+                this$1.restorePlaceholder();
+            }
+        }, this);
+
         on('as24-autocomplete:suggestion:selected', function (e) {
             e.stopPropagation();
             this$1.setKeyLabelPair(e.target.dataset.key, e.target.dataset.label);
@@ -807,11 +851,17 @@ var AutocompleteInput$1 = (function (HTMLElement) {
 
         on('as24-autocomplete:input:trigger-suggestions', function (e) {
             e.stopPropagation();
+
             if (!this$1.list.isVisible()) {
-                this$1.list.show();
+                this$1.showList();
             }
+
+            var selectedValue = this$1.selectedValue();
             this$1.classList.add('as24-autocomplete--active');
-            this$1.fetchList(this$1.userFacingInput.getValue()).then(function () { return this$1.list.moveSelection(1); });
+
+            this$1.fetchList(selectedValue ? '' : this$1.userFacingInput.getValue())
+                .then(function () { return selectedValue ? this$1.dataSourceElement().extractKeyValues().findIndex(function (i) { return i.key === selectedValue; }) + 1  : 0; })
+                .then(function (indexToSelect) { return this$1.list.moveSelectionMultiple(1, indexToSelect); });
         }, this);
 
         on('as24-autocomplete:input:focus-lost', function (e) {
