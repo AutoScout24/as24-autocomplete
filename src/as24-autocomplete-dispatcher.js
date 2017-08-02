@@ -90,6 +90,8 @@ class AutocompleteInput extends HTMLElement {
 
         this.isDirty = false;
 
+        userQueryEl.autocomplete = "off"; // make sure dropdown is not hidden by browsers autocompletion feature
+
         setTimeout(() => {
             if (this.valueInput.value) {
                 this.getInitialValueByKey()
