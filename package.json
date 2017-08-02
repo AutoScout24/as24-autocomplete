@@ -1,6 +1,6 @@
 {
   "name": "as24-autocomplete",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Autocomplete component",
   "main": "dist/as24-autocomplete.js",
   "types": "dist/as24-autocomplete.d.ts",
