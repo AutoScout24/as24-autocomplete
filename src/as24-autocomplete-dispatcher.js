@@ -66,6 +66,7 @@ class AutocompleteInput extends HTMLElement {
     }
 
     restorePlaceholder() {
+        console.log('restorePlaceholder');
         this.userQueryEl.placeholder = this.placeholder; // restore placeholder
     }
 
@@ -109,26 +110,27 @@ class AutocompleteInput extends HTMLElement {
         });
 
         on('mouseleave', () => {
-            this.restorePlaceholder();
-        }, this);
-
-        on('keydown', (e) => {
-            if (e.key === 'Tab') {
+            console.log('mouseleave');
+            if (this.list.isVisible()) {
+                console.log('list.isVisible');
                 this.restorePlaceholder();
             }
         }, this);
 
         on('as24-autocomplete:suggestion:selected', (e) => {
+            console.log('as24-autocomplete:suggestion:selected');
             e.stopPropagation();
             this.setKeyLabelPair(e.target.dataset.key, e.target.dataset.label)
         }, this);
 
         on('as24-autocomplete:input:restore-placeholder', (e) => {
+            console.log('as24-autocomplete:input:restore-placeholder');
             e.stopPropagation();
             this.restorePlaceholder()
         }, this);
 
         on('as24-autocomplete:input:trigger-suggestions', (e) => {
+            console.log('as24-autocomplete:input:trigger-suggestions');
             e.stopPropagation();
 
             if (! this.list.isVisible()) {
@@ -144,6 +146,7 @@ class AutocompleteInput extends HTMLElement {
         }, this);
 
         on('as24-autocomplete:input:focus-lost', (e) => {
+            console.log('as24-autocomplete:input:focus-lost');
             e.stopPropagation();
             if (this.userFacingInput.getValue() !== '' && ! this.list.isEmpty()) {
                 this.list.selectItem();
@@ -153,7 +156,16 @@ class AutocompleteInput extends HTMLElement {
             }
         }, this);
 
+        on('as24-autocomplete:input:close-list', (e) => {
+            console.log('as24-autocomplete:input:close-list');
+            e.stopPropagation();
+            this.list.hide();
+            this.userFacingInput.isOpened = false;
+            this.classList.remove('as24-autocomplete--active');
+        }, this);
+
         on('as24-autocomplete:input:enter', (e) => {
+            console.log('as24-autocomplete:input:enter');
             e.stopPropagation();
             if (this.list.isVisible()) {
                 this.list.selectItem();
@@ -167,6 +179,7 @@ class AutocompleteInput extends HTMLElement {
         }, this);
 
         on('as24-autocomplete:input:query', (e) => {
+            console.log('as24-autocomplete:input:query');
             e.stopPropagation();
             if (this.userFacingInput.getValue() !== '') {
                 this.classList.add('as24-autocomplete--user-input');
@@ -184,6 +197,7 @@ class AutocompleteInput extends HTMLElement {
         }, this);
 
         on('as24-autocomplete:input:cleanup', (e) => {
+            console.log('as24-autocomplete:input:cleanup');
             e.stopPropagation();
             this.classList.remove('as24-autocomplete--user-input');
             this.classList.add('as24-autocomplete--active');
@@ -193,6 +207,7 @@ class AutocompleteInput extends HTMLElement {
         }, this);
 
         on('as24-autocomplete:input:close', (e) => {
+            console.log('as24-autocomplete:input:close');
             e.stopPropagation();
             this.classList.remove('as24-autocomplete--user-input');
             this.classList.remove('as24-autocomplete--active');
@@ -200,6 +215,7 @@ class AutocompleteInput extends HTMLElement {
         }, this);
 
         on('as24-autocomplete:input:go-down', (e) => {
+            console.log('as24-autocomplete:input:go-down');
             e.stopPropagation();
             if (this.userFacingInput.getValue() !== '') {
                 this.classList.add('as24-autocomplete--active');
@@ -213,6 +229,7 @@ class AutocompleteInput extends HTMLElement {
         }, this);
 
         on('as24-autocomplete:input:go-up', (e) => {
+            console.log('as24-autocomplete:input:go-up');
             e.stopPropagation();
             if (this.list.isVisible()) {
                 this.list.moveSelection(- 1);
@@ -224,6 +241,7 @@ class AutocompleteInput extends HTMLElement {
                 return;
             }
             if (this.list.isVisible()) {
+                console.log('click');
                 if (this.userFacingInput.getValue() !== '' && ! this.list.isEmpty()) {
                     this.list.selectItem();
                 }

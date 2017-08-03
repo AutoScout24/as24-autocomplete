@@ -71,6 +71,7 @@ class AutocompleteInput extends HTMLElement {
     }
 
     onInputFocus() {
+        console.log('onInputFocus');
         this.isOpened = true;
         triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
     }
@@ -80,33 +81,42 @@ class AutocompleteInput extends HTMLElement {
         this.input.focus();
 
         if (this.input.value === '') {
+            console.log(1);
             if (this.isOpened) {
+                console.log(2);
                 this.isOpened = false;
-                triggerEvent('as24-autocomplete:input:close', this.input);
+                // triggerEvent('as24-autocomplete:input:close', this.input);
             } else {
+                console.log(3);
                 this.isOpened = true;
                 triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
             }
         } else {
+            console.log(4);
             this.input.value = '';
             this.isOpened = true;
             triggerEvent('as24-autocomplete:input:cleanup', this.input);
-            triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
+            // triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
         }
     }
 
     onBlur() {
+        console.log('onBlur');
         setTimeout(() => {
             if (this.input.value === '') {
-                if (this.isOpened) {
+                if (this.isOpened) { // for iOS buttons
                     this.isOpened = false;
                     triggerEvent('as24-autocomplete:input:restore-placeholder', this.input);
                     triggerEvent('as24-autocomplete:input:close', this.input);
                 }
             } else {
-                triggerEvent('as24-autocomplete:input:focus-lost', this.input);
+                triggerEvent('as24-autocomplete:input:close-list', this.input);
             }
         }, 100)
+    }
+
+    onClick(e) {
+        e.stopPropagation();
     }
 
     attachedCallback() {
@@ -118,6 +128,7 @@ class AutocompleteInput extends HTMLElement {
         on('keyup', this.onKeyUp.bind(this), this.input, true);
         on('keydown', this.onKeyDown.bind(this), this.input, true);
         on('click', this.onCrossClick.bind(this), this.dropDown);
+        on('click', this.onClick.bind(this), this.input);
         on('blur', this.onBlur.bind(this), this.input, this.dropDown);
     }
 

@@ -42,4 +42,4 @@ gulp.task('set-prod', () => {
 });
 
 gulp.task('default', ['set-prod', 'scss', 'js', 'ts']);
-gulp.task('dev', ['set-dev', 'serve', 'js:docs:watch', 'scss:docs:watch', 'js', 'scss', 'ts']);
+gulp.task('dev', ['set-dev', 'js', 'scss', 'ts', 'serve', 'js:docs:watch', 'scss:docs:watch', ]);

@@ -76,10 +76,6 @@ var closestByClassName = function (className) { return function (elem) { return 
                 ? elem
                 : closestByClassName(className)(elem.parentNode); }; };
 
-/**
- * @class
- * @typedef SeparatedItemsDataSource
- */
 var AutocompleteInput = (function (HTMLElement) {
     function AutocompleteInput () {
         HTMLElement.apply(this, arguments);
@@ -154,6 +150,7 @@ var AutocompleteInput = (function (HTMLElement) {
     };
 
     AutocompleteInput.prototype.onInputFocus = function onInputFocus () {
+        console.log('onInputFocus');
         this.isOpened = true;
         triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
     };
@@ -163,35 +160,44 @@ var AutocompleteInput = (function (HTMLElement) {
         this.input.focus();
 
         if (this.input.value === '') {
+            console.log(1);
             if (this.isOpened) {
+                console.log(2);
                 this.isOpened = false;
-                triggerEvent('as24-autocomplete:input:close', this.input);
+                // triggerEvent('as24-autocomplete:input:close', this.input);
             } else {
+                console.log(3);
                 this.isOpened = true;
                 triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
             }
         } else {
+            console.log(4);
             this.input.value = '';
             this.isOpened = true;
             triggerEvent('as24-autocomplete:input:cleanup', this.input);
-            triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
+            // triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
         }
     };
 
     AutocompleteInput.prototype.onBlur = function onBlur () {
         var this$1 = this;
 
+        console.log('onBlur');
         setTimeout(function () {
             if (this$1.input.value === '') {
-                if (this$1.isOpened) {
+                if (this$1.isOpened) { // for iOS buttons
                     this$1.isOpened = false;
                     triggerEvent('as24-autocomplete:input:restore-placeholder', this$1.input);
                     triggerEvent('as24-autocomplete:input:close', this$1.input);
                 }
             } else {
-                triggerEvent('as24-autocomplete:input:focus-lost', this$1.input);
+                triggerEvent('as24-autocomplete:input:close-list', this$1.input);
             }
         }, 100);
+    };
+
+    AutocompleteInput.prototype.onClick = function onClick (e) {
+        e.stopPropagation();
     };
 
     AutocompleteInput.prototype.attachedCallback = function attachedCallback () {
@@ -203,6 +209,7 @@ var AutocompleteInput = (function (HTMLElement) {
         on('keyup', this.onKeyUp.bind(this), this.input, true);
         on('keydown', this.onKeyDown.bind(this), this.input, true);
         on('click', this.onCrossClick.bind(this), this.dropDown);
+        on('click', this.onClick.bind(this), this.input);
         on('blur', this.onBlur.bind(this), this.input, this.dropDown);
     };
 
@@ -435,10 +442,6 @@ function registerDS$2() {
     }
 }
 
-/**
- * @class
- * @typedef PlainSuggestionsList
- */
 var PlainSuggestionsList = (function (HTMLElement) {
     function PlainSuggestionsList () {
         HTMLElement.apply(this, arguments);
@@ -449,13 +452,13 @@ var PlainSuggestionsList = (function (HTMLElement) {
     PlainSuggestionsList.prototype.constructor = PlainSuggestionsList;
 
     PlainSuggestionsList.prototype.show = function show () {
+        console.log('show');
         this.classList.add('as24-autocomplete__list--visible');
-        triggerEvent('as24-autocomplete:suggestions-list:show', this);
     };
 
     PlainSuggestionsList.prototype.hide = function hide () {
+        console.log('hide');
         this.classList.remove('as24-autocomplete__list--visible');
-        triggerEvent('as24-autocomplete:suggestions-list:hide', this);
     };
 
     PlainSuggestionsList.prototype.isEmpty = function isEmpty () {
@@ -511,17 +514,17 @@ var PlainSuggestionsList = (function (HTMLElement) {
     };
 
     PlainSuggestionsList.prototype.selectItem = function selectItem () {
+        console.log('selectItem list');
         var li = this.getSelectedSuggestionItem();
         if (li && li.dataset.type && li.dataset.type === 'selectable') {
             triggerEvent('as24-autocomplete:suggestion:selected', li);
-            this.hide();
         }
     };
 
     PlainSuggestionsList.prototype.onClick = function onClick (e) {
+        console.log('onClick list');
         var li = closestByClassName('as24-autocomplete__list-item')(e.target);
         if (li && li.dataset.type && li.dataset.type === 'selectable') {
-            this.hide();
             triggerEvent('as24-autocomplete:suggestion:selected', li);
         }
     };
@@ -558,7 +561,6 @@ var PlainSuggestionsList = (function (HTMLElement) {
             ).forEach(appendTo(df));
 
             appendTo(this)(df);
-            this.show();
         }.bind(this);
     };
 
@@ -578,10 +580,6 @@ function registerDS$3() {
     }
 }
 
-/**
- * @class
- * @typedef GroupedSuggestionsList
- */
 var GroupedSuggestionsList = (function (HTMLElement) {
     function GroupedSuggestionsList () {
         HTMLElement.apply(this, arguments);
@@ -593,12 +591,10 @@ var GroupedSuggestionsList = (function (HTMLElement) {
 
     GroupedSuggestionsList.prototype.show = function show () {
         this.classList.add('as24-autocomplete__list--visible');
-        triggerEvent('as24-autocomplete:suggestions-list:show', this);
     };
 
     GroupedSuggestionsList.prototype.hide = function hide () {
         this.classList.remove('as24-autocomplete__list--visible');
-        triggerEvent('as24-autocomplete:suggestions-list:hide', this);
     };
 
     GroupedSuggestionsList.prototype.isEmpty = function isEmpty () {
@@ -661,14 +657,12 @@ var GroupedSuggestionsList = (function (HTMLElement) {
         var li = this.getSelectedSuggestionItem();
         if (li && li.dataset.type && li.dataset.type === 'selectable') {
             triggerEvent('as24-autocomplete:suggestion:selected', li);
-            this.hide();
         }
     };
 
     GroupedSuggestionsList.prototype.onClick = function onClick (e) {
         var li = closestByClassName('as24-autocomplete__list-item')(e.target);
         if (li && li.dataset.type && li.dataset.type === 'selectable') {
-            this.hide();
             triggerEvent('as24-autocomplete:suggestion:selected', li);
         }
     };
@@ -818,6 +812,7 @@ var AutocompleteInput$1 = (function (HTMLElement) {
     };
 
     AutocompleteInput.prototype.restorePlaceholder = function restorePlaceholder () {
+        console.log('restorePlaceholder');
         this.userQueryEl.placeholder = this.placeholder; // restore placeholder
     };
 
@@ -863,26 +858,27 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         });
 
         on('mouseleave', function () {
-            this$1.restorePlaceholder();
-        }, this);
-
-        on('keydown', function (e) {
-            if (e.key === 'Tab') {
+            console.log('mouseleave');
+            if (this$1.list.isVisible()) {
+                console.log('list.isVisible');
                 this$1.restorePlaceholder();
             }
         }, this);
 
         on('as24-autocomplete:suggestion:selected', function (e) {
+            console.log('as24-autocomplete:suggestion:selected');
             e.stopPropagation();
             this$1.setKeyLabelPair(e.target.dataset.key, e.target.dataset.label);
         }, this);
 
         on('as24-autocomplete:input:restore-placeholder', function (e) {
+            console.log('as24-autocomplete:input:restore-placeholder');
             e.stopPropagation();
             this$1.restorePlaceholder();
         }, this);
 
         on('as24-autocomplete:input:trigger-suggestions', function (e) {
+            console.log('as24-autocomplete:input:trigger-suggestions');
             e.stopPropagation();
 
             if (! this$1.list.isVisible()) {
@@ -898,6 +894,7 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         }, this);
 
         on('as24-autocomplete:input:focus-lost', function (e) {
+            console.log('as24-autocomplete:input:focus-lost');
             e.stopPropagation();
             if (this$1.userFacingInput.getValue() !== '' && ! this$1.list.isEmpty()) {
                 this$1.list.selectItem();
@@ -907,7 +904,16 @@ var AutocompleteInput$1 = (function (HTMLElement) {
             }
         }, this);
 
+        on('as24-autocomplete:input:close-list', function (e) {
+            console.log('as24-autocomplete:input:close-list');
+            e.stopPropagation();
+            this$1.list.hide();
+            this$1.userFacingInput.isOpened = false;
+            this$1.classList.remove('as24-autocomplete--active');
+        }, this);
+
         on('as24-autocomplete:input:enter', function (e) {
+            console.log('as24-autocomplete:input:enter');
             e.stopPropagation();
             if (this$1.list.isVisible()) {
                 this$1.list.selectItem();
@@ -921,6 +927,7 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         }, this);
 
         on('as24-autocomplete:input:query', function (e) {
+            console.log('as24-autocomplete:input:query');
             e.stopPropagation();
             if (this$1.userFacingInput.getValue() !== '') {
                 this$1.classList.add('as24-autocomplete--user-input');
@@ -938,6 +945,7 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         }, this);
 
         on('as24-autocomplete:input:cleanup', function (e) {
+            console.log('as24-autocomplete:input:cleanup');
             e.stopPropagation();
             this$1.classList.remove('as24-autocomplete--user-input');
             this$1.classList.add('as24-autocomplete--active');
@@ -947,6 +955,7 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         }, this);
 
         on('as24-autocomplete:input:close', function (e) {
+            console.log('as24-autocomplete:input:close');
             e.stopPropagation();
             this$1.classList.remove('as24-autocomplete--user-input');
             this$1.classList.remove('as24-autocomplete--active');
@@ -954,6 +963,7 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         }, this);
 
         on('as24-autocomplete:input:go-down', function (e) {
+            console.log('as24-autocomplete:input:go-down');
             e.stopPropagation();
             if (this$1.userFacingInput.getValue() !== '') {
                 this$1.classList.add('as24-autocomplete--active');
@@ -967,6 +977,7 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         }, this);
 
         on('as24-autocomplete:input:go-up', function (e) {
+            console.log('as24-autocomplete:input:go-up');
             e.stopPropagation();
             if (this$1.list.isVisible()) {
                 this$1.list.moveSelection(- 1);
@@ -978,6 +989,7 @@ var AutocompleteInput$1 = (function (HTMLElement) {
                 return;
             }
             if (this$1.list.isVisible()) {
+                console.log('click');
                 if (this$1.userFacingInput.getValue() !== '' && ! this$1.list.isEmpty()) {
                     this$1.list.selectItem();
                 }

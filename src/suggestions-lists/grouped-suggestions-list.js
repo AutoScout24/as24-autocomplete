@@ -10,12 +10,10 @@ class GroupedSuggestionsList extends HTMLElement {
 
     show() {
         this.classList.add('as24-autocomplete__list--visible');
-        triggerEvent('as24-autocomplete:suggestions-list:show', this);
     }
 
     hide() {
         this.classList.remove('as24-autocomplete__list--visible');
-        triggerEvent('as24-autocomplete:suggestions-list:hide', this);
     }
 
     isEmpty() {
@@ -76,14 +74,12 @@ class GroupedSuggestionsList extends HTMLElement {
         const li = this.getSelectedSuggestionItem();
         if (li && li.dataset.type && li.dataset.type === 'selectable') {
             triggerEvent('as24-autocomplete:suggestion:selected', li);
-            this.hide();
         }
     }
 
     onClick(e) {
         const li = closestByClassName('as24-autocomplete__list-item')(e.target);
         if (li && li.dataset.type && li.dataset.type === 'selectable') {
-            this.hide();
             triggerEvent('as24-autocomplete:suggestion:selected', li);
         }
     }
