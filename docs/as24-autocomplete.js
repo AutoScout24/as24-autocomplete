@@ -76,6 +76,10 @@ var closestByClassName = function (className) { return function (elem) { return 
                 ? elem
                 : closestByClassName(className)(elem.parentNode); }; };
 
+/**
+ * @class
+ * @typedef SeparatedItemsDataSource
+ */
 var AutocompleteInput = (function (HTMLElement) {
     function AutocompleteInput () {
         HTMLElement.apply(this, arguments);
@@ -414,6 +418,10 @@ function registerDS$2() {
     }
 }
 
+/**
+ * @class
+ * @typedef PlainSuggestionsList
+ */
 var PlainSuggestionsList = (function (HTMLElement) {
     function PlainSuggestionsList () {
         HTMLElement.apply(this, arguments);
@@ -553,6 +561,10 @@ function registerDS$3() {
     }
 }
 
+/**
+ * @class
+ * @typedef GroupedSuggestionsList
+ */
 var GroupedSuggestionsList = (function (HTMLElement) {
     function GroupedSuggestionsList () {
         HTMLElement.apply(this, arguments);
@@ -815,7 +827,7 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         }
 
         this.isDirty = false;
-        
+
         if ('autocomplete' in this.userQueryEl) {
             this.userQueryEl.autocomplete = 'off'; // make sure dropdown is not hidden by browsers autocompletion feature, unfortunately not in every browser
         }

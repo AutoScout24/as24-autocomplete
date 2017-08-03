@@ -105,6 +105,11 @@ as24-autocomplete {
         display: flex;
         align-items: center;
         justify-content: space-around;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -ms-user-select: none;
     }
 
     &__icon-dropdown,

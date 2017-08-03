@@ -134,7 +134,12 @@ as24-autocomplete {
       -ms-flex-align: center;
           align-items: center;
   -ms-flex-pack: distribute;
-      justify-content: space-around; }
+      justify-content: space-around;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -ms-user-select: none; }
 
 .as24-autocomplete__icon-dropdown__icon, .as24-autocomplete__icon-cross__icon {
   fill: #949494;
