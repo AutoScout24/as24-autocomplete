@@ -9,12 +9,10 @@ import { $, on, triggerEvent, appendTo, closestByClassName } from '../helper';
 class PlainSuggestionsList extends HTMLElement {
 
     show() {
-        console.log('show');
         this.classList.add('as24-autocomplete__list--visible');
     }
 
     hide() {
-        console.log('hide');
         this.classList.remove('as24-autocomplete__list--visible');
     }
 
@@ -69,7 +67,6 @@ class PlainSuggestionsList extends HTMLElement {
     }
 
     selectItem() {
-        console.log('selectItem list');
         const li = this.getSelectedSuggestionItem();
         if (li && li.dataset.type && li.dataset.type === 'selectable') {
             triggerEvent('as24-autocomplete:suggestion:selected', li);
@@ -77,7 +74,6 @@ class PlainSuggestionsList extends HTMLElement {
     }
 
     onClick(e) {
-        console.log('onClick list');
         const li = closestByClassName('as24-autocomplete__list-item')(e.target);
         if (li && li.dataset.type && li.dataset.type === 'selectable') {
             triggerEvent('as24-autocomplete:suggestion:selected', li);

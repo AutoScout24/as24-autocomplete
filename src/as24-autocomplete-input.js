@@ -71,7 +71,6 @@ class AutocompleteInput extends HTMLElement {
     }
 
     onInputFocus() {
-        console.log('onInputFocus');
         this.isOpened = true;
         triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
     }
@@ -81,18 +80,14 @@ class AutocompleteInput extends HTMLElement {
         this.input.focus();
 
         if (this.input.value === '') {
-            console.log(1);
             if (this.isOpened) {
-                console.log(2);
                 this.isOpened = false;
                 // triggerEvent('as24-autocomplete:input:close', this.input);
             } else {
-                console.log(3);
                 this.isOpened = true;
                 triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
             }
         } else {
-            console.log(4);
             this.input.value = '';
             this.isOpened = true;
             triggerEvent('as24-autocomplete:input:cleanup', this.input);
@@ -101,7 +96,6 @@ class AutocompleteInput extends HTMLElement {
     }
 
     onBlur() {
-        console.log('onBlur');
         setTimeout(() => {
             if (this.input.value === '') {
                 if (this.isOpened) { // for iOS buttons
