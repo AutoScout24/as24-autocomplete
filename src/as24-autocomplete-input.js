@@ -16,6 +16,8 @@ class AutocompleteInput extends HTMLElement {
 
     setDisabled(flag) {
         if (flag) {
+            triggerEvent('as24-autocomplete:input:cleanup', this.input);
+            triggerEvent('as24-autocomplete:input:restore-placeholder', this.input);
             this.input.setAttribute('disabled', 'disabled');
         } else {
             this.input.removeAttribute('disabled');

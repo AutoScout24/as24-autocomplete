@@ -99,6 +99,8 @@ var AutocompleteInput = (function (HTMLElement) {
 
     AutocompleteInput.prototype.setDisabled = function setDisabled (flag) {
         if (flag) {
+            triggerEvent('as24-autocomplete:input:cleanup', this.input);
+            triggerEvent('as24-autocomplete:input:restore-placeholder', this.input);
             this.input.setAttribute('disabled', 'disabled');
         } else {
             this.input.removeAttribute('disabled');
@@ -439,10 +441,6 @@ function registerDS$2() {
     }
 }
 
-/**
- * @class
- * @typedef PlainSuggestionsList
- */
 var PlainSuggestionsList = (function (HTMLElement) {
     function PlainSuggestionsList () {
         HTMLElement.apply(this, arguments);
@@ -577,10 +575,6 @@ function registerDS$3() {
     }
 }
 
-/**
- * @class
- * @typedef GroupedSuggestionsList
- */
 var GroupedSuggestionsList = (function (HTMLElement) {
     function GroupedSuggestionsList () {
         HTMLElement.apply(this, arguments);
