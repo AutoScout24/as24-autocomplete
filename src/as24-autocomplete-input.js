@@ -1,4 +1,4 @@
-import { $, on, triggerEvent } from './helper';
+import { $, on, triggerEvent, closestByClassName } from './helper';
 
 /**
  * @class
@@ -77,21 +77,20 @@ class AutocompleteInput extends HTMLElement {
 
     onCrossClick() {
         if (this.input.disabled) return;
-        this.input.focus();
 
         if (this.input.value === '') {
             if (this.isOpened) {
                 this.isOpened = false;
-                // triggerEvent('as24-autocomplete:input:close', this.input);
+                triggerEvent('as24-autocomplete:input:restore-placeholder', this.input);
+                triggerEvent('as24-autocomplete:input:close', this.input);
             } else {
-                this.isOpened = true;
+                this.input.focus();
                 triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
             }
         } else {
             this.input.value = '';
-            this.isOpened = true;
             triggerEvent('as24-autocomplete:input:cleanup', this.input);
-            // triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
+            this.input.focus();
         }
     }
 

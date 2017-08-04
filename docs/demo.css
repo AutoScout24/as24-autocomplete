@@ -17,3 +17,7 @@ body {
   max-width: 1024px;
   margin: 0 auto;
 }
+
+.as24-autocomplete__icon-dropdown, .as24-autocomplete__icon-cross {
+    width: 100%;
+}
