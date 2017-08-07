@@ -107,7 +107,7 @@ class AutocompleteInput extends HTMLElement {
             } else {
                 triggerEvent('as24-autocomplete:input:close-list', this.input);
             }
-        }, 100)
+        }, 200)
     }
 
     onClick(e) {
