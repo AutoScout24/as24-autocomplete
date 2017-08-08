@@ -110,10 +110,6 @@ class AutocompleteInput extends HTMLElement {
         }, 200)
     }
 
-    onClick(e) {
-        e.stopPropagation();
-    }
-
     attachedCallback() {
         this.isOpened = false;
         this.isDirty = false;

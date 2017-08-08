@@ -192,12 +192,9 @@ var AutocompleteInput = (function (HTMLElement) {
             } else {
                 triggerEvent('as24-autocomplete:input:close-list', this$1.input);
             }
-        }, 100);
+        }, 200);
     };
 
-    AutocompleteInput.prototype.onClick = function onClick (e) {
-        e.stopPropagation();
-    };
 
     AutocompleteInput.prototype.attachedCallback = function attachedCallback () {
         this.isOpened = false;
@@ -853,6 +850,12 @@ var AutocompleteInput$1 = (function (HTMLElement) {
 
         on('mouseleave', function () {
             if (this$1.list.isVisible()) {
+                this$1.restorePlaceholder();
+            }
+        }, this);
+
+        on('keydown', function (e) {
+            if (e.key === 'Tab') {
                 this$1.restorePlaceholder();
             }
         }, this);

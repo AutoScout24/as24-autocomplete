@@ -114,6 +114,12 @@ class AutocompleteInput extends HTMLElement {
             }
         }, this);
 
+        on('keydown', (e) => {
+            if (e.key === 'Tab') {
+                this.restorePlaceholder();
+            }
+        }, this);
+
         on('as24-autocomplete:suggestion:selected', (e) => {
             e.stopPropagation();
             this.setKeyLabelPair(e.target.dataset.key, e.target.dataset.label)
