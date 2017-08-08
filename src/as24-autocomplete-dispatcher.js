@@ -31,7 +31,6 @@ class AutocompleteInput extends HTMLElement {
         this.userFacingInput.setValue('');
         this.valueInput.value = '';
         this.list.hide();
-        this.isDirty = false;
         this.classList.remove('as24-autocomplete--active');
         this.classList.remove('as24-autocomplete--user-input');
     }
@@ -88,8 +87,6 @@ class AutocompleteInput extends HTMLElement {
             throw new Error('The DataSource has not been found');
         }
 
-        this.isDirty = false;
-
         if ('autocomplete' in this.userQueryEl) {
             this.userQueryEl.autocomplete = 'off'; // make sure dropdown is not hidden by browsers autocompletion feature, unfortunately not in every browser
         }
@@ -100,19 +97,13 @@ class AutocompleteInput extends HTMLElement {
                     .then(suggestion => {
                         if (suggestion) {
                             this.userFacingInput.setValue(suggestion.value);
+                            this.userQueryEl.placeholder = ''; // clean placeholder for IOS
                             this.classList.add('as24-autocomplete--user-input');
-                            this.isDirty = true;
                         }
                         return true;
                     });
             }
         });
-
-        on('mouseleave', () => {
-            if (this.list.isVisible()) {
-                this.restorePlaceholder();
-            }
-        }, this);
 
         on('keydown', (e) => {
             if (e.key === 'Tab') {
@@ -233,6 +224,7 @@ class AutocompleteInput extends HTMLElement {
                 return;
             }
             if (this.list.isVisible()) {
+
                 if (this.userFacingInput.getValue() !== '' && ! this.list.isEmpty()) {
                     this.list.selectItem();
                 }

@@ -77,7 +77,7 @@ class AutocompleteInput extends HTMLElement {
         triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
     }
 
-    onCrossClick() {
+    onCrossClick(e) {
         if (this.input.disabled) return;
 
         if (this.input.value === '') {
@@ -90,6 +90,7 @@ class AutocompleteInput extends HTMLElement {
                 triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
             }
         } else {
+            this.eventFired = true;
             this.input.value = '';
             triggerEvent('as24-autocomplete:input:cleanup', this.input);
             this.input.focus();
@@ -99,27 +100,29 @@ class AutocompleteInput extends HTMLElement {
     onBlur() {
         setTimeout(() => {
             if (this.input.value === '') {
-                if (this.isOpened) { // for iOS buttons
+                if (this.isOpened && ! this.eventFired) { // for iOS buttons
                     this.isOpened = false;
                     triggerEvent('as24-autocomplete:input:restore-placeholder', this.input);
                     triggerEvent('as24-autocomplete:input:close', this.input);
+                } else if (! this.isOpened) {
+                    triggerEvent('as24-autocomplete:input:restore-placeholder', this.input);
                 }
             } else {
                 triggerEvent('as24-autocomplete:input:close-list', this.input);
             }
-        }, 200)
+            this.eventFired = false;
+        }, 150)
     }
 
     attachedCallback() {
         this.isOpened = false;
-        this.isDirty = false;
+        this.eventFired = false;
         this.dropDown = $('.as24-autocomplete__icon-wrapper', this);
         this.input = $('input', this);
         on('focus', this.onInputFocus.bind(this), this.input);
         on('keyup', this.onKeyUp.bind(this), this.input, true);
         on('keydown', this.onKeyDown.bind(this), this.input, true);
         on('click', this.onCrossClick.bind(this), this.dropDown);
-        on('click', this.onClick.bind(this), this.input);
         on('blur', this.onBlur.bind(this), this.input, this.dropDown);
     }
 

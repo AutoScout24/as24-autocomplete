@@ -160,7 +160,7 @@ var AutocompleteInput = (function (HTMLElement) {
         triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
     };
 
-    AutocompleteInput.prototype.onCrossClick = function onCrossClick () {
+    AutocompleteInput.prototype.onCrossClick = function onCrossClick (e) {
         if (this.input.disabled) { return; }
 
         if (this.input.value === '') {
@@ -173,6 +173,7 @@ var AutocompleteInput = (function (HTMLElement) {
                 triggerEvent('as24-autocomplete:input:trigger-suggestions', this.input);
             }
         } else {
+            this.eventFired = true;
             this.input.value = '';
             triggerEvent('as24-autocomplete:input:cleanup', this.input);
             this.input.focus();
@@ -184,28 +185,29 @@ var AutocompleteInput = (function (HTMLElement) {
 
         setTimeout(function () {
             if (this$1.input.value === '') {
-                if (this$1.isOpened) { // for iOS buttons
+                if (this$1.isOpened && ! this$1.eventFired) { // for iOS buttons
                     this$1.isOpened = false;
                     triggerEvent('as24-autocomplete:input:restore-placeholder', this$1.input);
                     triggerEvent('as24-autocomplete:input:close', this$1.input);
+                } else if (! this$1.isOpened) {
+                    triggerEvent('as24-autocomplete:input:restore-placeholder', this$1.input);
                 }
             } else {
                 triggerEvent('as24-autocomplete:input:close-list', this$1.input);
             }
-        }, 200);
+            this$1.eventFired = false;
+        }, 150);
     };
-
 
     AutocompleteInput.prototype.attachedCallback = function attachedCallback () {
         this.isOpened = false;
-        this.isDirty = false;
+        this.eventFired = false;
         this.dropDown = $('.as24-autocomplete__icon-wrapper', this);
         this.input = $('input', this);
         on('focus', this.onInputFocus.bind(this), this.input);
         on('keyup', this.onKeyUp.bind(this), this.input, true);
         on('keydown', this.onKeyDown.bind(this), this.input, true);
         on('click', this.onCrossClick.bind(this), this.dropDown);
-        on('click', this.onClick.bind(this), this.input);
         on('blur', this.onBlur.bind(this), this.input, this.dropDown);
     };
 
@@ -769,7 +771,6 @@ var AutocompleteInput$1 = (function (HTMLElement) {
         this.userFacingInput.setValue('');
         this.valueInput.value = '';
         this.list.hide();
-        this.isDirty = false;
         this.classList.remove('as24-autocomplete--active');
         this.classList.remove('as24-autocomplete--user-input');
     };
@@ -828,8 +829,6 @@ var AutocompleteInput$1 = (function (HTMLElement) {
             throw new Error('The DataSource has not been found');
         }
 
-        this.isDirty = false;
-
         if ('autocomplete' in this.userQueryEl) {
             this.userQueryEl.autocomplete = 'off'; // make sure dropdown is not hidden by browsers autocompletion feature, unfortunately not in every browser
         }
@@ -840,19 +839,13 @@ var AutocompleteInput$1 = (function (HTMLElement) {
                     .then(function (suggestion) {
                         if (suggestion) {
                             this$1.userFacingInput.setValue(suggestion.value);
+                            this$1.userQueryEl.placeholder = ''; // clean placeholder for IOS
                             this$1.classList.add('as24-autocomplete--user-input');
-                            this$1.isDirty = true;
                         }
                         return true;
                     });
             }
         });
-
-        on('mouseleave', function () {
-            if (this$1.list.isVisible()) {
-                this$1.restorePlaceholder();
-            }
-        }, this);
 
         on('keydown', function (e) {
             if (e.key === 'Tab') {
@@ -973,6 +966,7 @@ var AutocompleteInput$1 = (function (HTMLElement) {
                 return;
             }
             if (this$1.list.isVisible()) {
+
                 if (this$1.userFacingInput.getValue() !== '' && ! this$1.list.isEmpty()) {
                     this$1.list.selectItem();
                 }
