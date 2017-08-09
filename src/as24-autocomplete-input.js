@@ -111,7 +111,7 @@ class AutocompleteInput extends HTMLElement {
                 triggerEvent('as24-autocomplete:input:close-list', this.input);
             }
             this.eventFired = false;
-        }, 150)
+        }, 200)
     }
 
     attachedCallback() {

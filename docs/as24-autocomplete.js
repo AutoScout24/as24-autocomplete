@@ -196,7 +196,7 @@ var AutocompleteInput = (function (HTMLElement) {
                 triggerEvent('as24-autocomplete:input:close-list', this$1.input);
             }
             this$1.eventFired = false;
-        }, 150);
+        }, 200);
     };
 
     AutocompleteInput.prototype.attachedCallback = function attachedCallback () {
