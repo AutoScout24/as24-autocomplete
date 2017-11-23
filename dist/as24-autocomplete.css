@@ -112,7 +112,7 @@ as24-autocomplete {
   padding: 4px 12px;
   height: 40px; }
   .as24-autocomplete__input:focus:enabled {
-    box-shadow: inset 0 0 0 1px #3d648c; }
+    box-shadow: inset 1px 1px #3d648c, inset -1px 0 #3d648c; }
   .as24-autocomplete__input:focus:enabled + ul {
     border-top-width: 0; }
 
