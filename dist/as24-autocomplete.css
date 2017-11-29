@@ -95,9 +95,18 @@ as24-autocomplete {
     fill: #c4c4c4; }
 
 .as24-autocomplete--active .as24-autocomplete__input {
-  border-bottom: 1px solid #c4c4c4 !important;
+  border-bottom: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0; }
+
+.as24-autocomplete--active .as24-autocomplete__input-wrapper:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  left: 2px;
+  right: 2px;
+  border-bottom: 1px solid #c4c4c4; }
 
 .as24-autocomplete--user-input .as24-autocomplete__icon-dropdown {
   display: none; }

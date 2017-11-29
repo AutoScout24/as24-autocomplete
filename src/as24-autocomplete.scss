@@ -10,6 +10,9 @@ as24-autocomplete {
 
     &__input{
         transition: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
 
         &::-ms-clear {
         	  display: none;

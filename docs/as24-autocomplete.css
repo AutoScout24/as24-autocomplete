@@ -53,7 +53,10 @@ as24-autocomplete {
 
 .as24-autocomplete__input {
   -webkit-transition: none;
-  transition: none; }
+  transition: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none; }
   .as24-autocomplete__input::-ms-clear {
     display: none; }
   .as24-autocomplete__input::-webkit-input-placeholder {
