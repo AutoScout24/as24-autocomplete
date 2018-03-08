@@ -8259,9 +8259,9 @@ showcar-storage@^1.1.1:
     amp-merge "^1.0.0"
     cookies-js "^1.2.2"
 
-"showcar-ui@git+https://github.com/AutoScout24/showcar-ui.git":
+"showcar-ui@git+https://github.com/Scout24/showcar-ui.git":
   version "4.2.19"
-  resolved "git+https://github.com/AutoScout24/showcar-ui.git#255ffc43c52e6e6c7666477d63cfc803fd192040"
+  resolved "git+https://github.com/Scout24/showcar-ui.git#255ffc43c52e6e6c7666477d63cfc803fd192040"
   dependencies:
     document-register-element "^0.5.4"
     dom4 "^1.8.5"
