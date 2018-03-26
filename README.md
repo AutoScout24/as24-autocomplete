@@ -109,7 +109,7 @@ The new components has been introduced so that you can configure your autocomple
 
 When you use `as24-grouped-items-data-source` you should place the items within `group` element.
 
-Please, check the [demo](https://autoscout24.github.io/as24-autocomplete/) out
+Please, check the [demo](https://scout24.github.io/as24-autocomplete/) out
 
 #### Migration to 1.x
 
