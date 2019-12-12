@@ -1,0 +1,22 @@
+type: library
+id: as24-autocomplete
+name: as24-autocomplete
+description: NPM package for autocomplete input element
+vertical: as24
+owners:
+  - '#AS24-acquisition-cxp-ds@scout24.com'
+  - as24-cxp-acquisition@scout24.com
+availability: false
+integrity: false
+confidentiality: public
+exposure: 
+  - non-applicable
+lifecycle: maintenance
+product: showcar-ui
+links:
+  - type: repository
+    title: Git Repository
+    address: https://github.com/Scout24/as24-autocomplete/
+  - type: documentation
+    title: Readme
+    address: https://github.com/Scout24/as24-autocomplete/blob/master/README.md
