@@ -4,8 +4,7 @@ name: as24-autocomplete
 description: NPM package for autocomplete input element
 vertical: as24
 owners:
-  - '#AS24-acquisition-cxp-ds@scout24.com'
-  - as24-cxp-acquisition@scout24.com
+  -  as24-ug-activation@autoscout24.com
 availability: false
 integrity: false
 confidentiality: public
